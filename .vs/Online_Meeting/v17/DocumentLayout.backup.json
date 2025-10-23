@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Nam3\\Javaa\\Online_Meeting\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "Online_Meeting\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\MainWindow.xaml.cs",
+              "RelativeToolTip": "Online_Meeting\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-23T09:48:17.97Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

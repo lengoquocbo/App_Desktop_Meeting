@@ -9,28 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Page Remove="Desktop\Controls\VideoRenderer.xaml" />
-    <Page Remove="Desktop\Views\JoinGroupChat.xaml" />
-    <Page Remove="Desktop\Views\JoinRoomMeeting.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Desktop\Controls\VideoRenderer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Compile>
-    <Compile Include="Desktop\Views\JoinGroupChat.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Compile>
-    <Compile Include="Desktop\Views\JoinRoomMeeting.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Desktop\Converters\" />
-    <Folder Include="Desktop\Resources\Img\" />
-    <Folder Include="Desktop\Resources\icon\" />
-    <Folder Include="SignalingServer\Data\Migrations\" />
+    <Folder Include="Client\ViewModels\" />
+    <Folder Include="Client\Views\Resources\img\" />
+    <Folder Include="Client\Views\Resources\icon\" />
+    <Folder Include="SignalingServer\Data\Entities\" />
+    <Folder Include="SignalingServer\Data\DbContext\" />
+    <Folder Include="SignalingServer\Data\Repositories\" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,168 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\Nam3\\Javaa\\Online_Meeting\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\homeview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\registerview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\registerview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\registerview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\registerview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\client\\views\\settingsview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\client\\views\\settingsview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|d:\\nam3\\javaa\\online_meeting\\online_meeting\\online_meeting.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}|Online_Meeting\\Online_Meeting.csproj|solutionrelative:online_meeting\\online_meeting.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\MainWindow.xaml",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\MainWindow.xaml",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-28T02:40:14.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\AssemblyInfo.cs",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\AssemblyInfo.cs",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T02:39:28.836Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LoginView.xaml.cs",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\LoginView.xaml.cs",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\LoginView.xaml.cs",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\LoginView.xaml.cs",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\LoginView.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAMkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T02:30:15.096Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RegisterView.xaml.cs",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\RegisterView.xaml.cs",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\RegisterView.xaml.cs",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\RegisterView.xaml.cs",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\RegisterView.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T02:02:19.084Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RegisterView.xaml",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\RegisterView.xaml",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\RegisterView.xaml",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\RegisterView.xaml",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\RegisterView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-28T02:01:17.616Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "HomeView.xaml",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\HomeView.xaml",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\HomeView.xaml",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\HomeView.xaml",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\HomeView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-28T02:00:28.523Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "LoginView.xaml",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\LoginView.xaml",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\LoginView.xaml",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\LoginView.xaml",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\LoginView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-28T01:59:44.199Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SettingsView.xaml",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\SettingsView.xaml",
+              "RelativeDocumentMoniker": "Online_Meeting\\Client\\Views\\SettingsView.xaml",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Client\\Views\\SettingsView.xaml",
+              "RelativeToolTip": "Online_Meeting\\Client\\Views\\SettingsView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-28T02:18:08.741Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Online_Meeting.csproj",
+              "DocumentMoniker": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Online_Meeting.csproj",
+              "RelativeDocumentMoniker": "Online_Meeting\\Online_Meeting.csproj",
+              "ToolTip": "D:\\Nam3\\Javaa\\Online_Meeting\\Online_Meeting\\Online_Meeting.csproj",
+              "RelativeToolTip": "Online_Meeting\\Online_Meeting.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-27T17:03:59.599Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,12 +1,145 @@
-﻿<Window x:Class="Online_Meeting.Client.Views.HomeView"
+﻿<Window x:Class="Online_Meeting.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Online_Meeting.Client.Views"
-        mc:Ignorable="d"
-        Title="HomeView" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="P2P Meeting App" 
+        Height="700" 
+        Width="1200"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True">
+
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="MenuButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A3F47"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" CornerRadius="10">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="0" Opacity="0.3"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Custom Title Bar -->
+            <Border Grid.Row="0" Background="#2C3E50" CornerRadius="10,10,0,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0">
+                        <materialDesign:PackIcon Kind="Video" Foreground="White" Width="20" Height="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="P2P Meeting App" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                        <Button Content="─" Width="40" Height="40" Background="Transparent" Foreground="White" BorderThickness="0" Click="MinimizeButton_Click" FontSize="16"/>
+                        <Button Content="□" Width="40" Height="40" Background="Transparent" Foreground="White" BorderThickness="0" Click="MaximizeButton_Click" FontSize="16"/>
+                        <Button Content="✕" Width="40" Height="40" Background="Transparent" Foreground="White" BorderThickness="0" Click="CloseButton_Click" FontSize="16" FontWeight="Bold"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Main Content Area -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Sidebar Navigation -->
+                <Border Grid.Column="0" Background="#34495E" CornerRadius="0,0,0,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- User Profile Section -->
+                        <Border Grid.Row="0" Background="#2C3E50" Padding="15" Margin="10,10,10,20">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
+                            </Border.Effect>
+                            <StackPanel>
+                                <Ellipse Width="60" Height="60" HorizontalAlignment="Center">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="/Assets/default-avatar.png" Stretch="UniformToFill"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock x:Name="txtUsername" Text="Username" Foreground="White" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                                    <Ellipse Width="8" Height="8" Fill="#2ECC71" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Online" Foreground="#BDC3C7" FontSize="12"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Navigation Menu -->
+                        <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                            <Button x:Name="btnHome" Style="{StaticResource MenuButton}" Click="NavigateToHome">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Home" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Trang chủ" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="btnMeetings" Style="{StaticResource MenuButton}" Click="NavigateToMeetings">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Video" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Cuộc họp" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="btnChat" Style="{StaticResource MenuButton}" Click="NavigateToChat">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Message" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Nhắn tin" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="btnContacts" Style="{StaticResource MenuButton}" Click="NavigateToContacts">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="AccountGroup" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Danh bạ" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button x:Name="btnSettings" Style="{StaticResource MenuButton}" Click="NavigateToSettings">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Settings" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Cài đặt" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Logout Button -->
+                        <Button Grid.Row="2" Style="{StaticResource MenuButton}" Margin="10,0,10,10" Click="LogoutButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Logout" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="Đăng xuất" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Content Frame -->
+                <Frame x:Name="ContentFrame" Grid.Column="1" NavigationUIVisibility="Hidden" Background="#ECF0F1"/>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

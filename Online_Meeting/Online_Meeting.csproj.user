@@ -2,25 +2,31 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <Compile Update="Client\Views\GroupChatView.xaml.cs">
+    <Compile Update="Client\Views\Pages\ForgotPasswordView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Client\Views\HomeView.xaml.cs">
+    <Compile Update="Client\Views\Pages\GroupChatView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Client\Views\LoginView.xaml.cs">
+    <Compile Update="Client\Views\Pages\HomeView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Client\Views\MeetingRoomView.xaml.cs">
+    <Compile Update="Client\Views\Pages\LoginView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Client\Views\ProfileView.xaml.cs">
+    <Compile Update="Client\Views\Pages\MeetingRoomView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Client\Views\RegisterView.xaml.cs">
+    <Compile Update="Client\Views\Pages\ProfileView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Client\Views\SettingsView.xaml.cs">
+    <Compile Update="Client\Views\Pages\RegisterView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Client\Views\Pages\SettingsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Client\Views\UserControls\SidebarUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

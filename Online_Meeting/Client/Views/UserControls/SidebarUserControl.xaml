@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Online_Meeting.Client.Views.UserControls.SidebarUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="#1E1E2F" Padding="10">
+        <StackPanel>
+            <TextBlock Text="ONLINE MEETING"
+                       Foreground="White" FontWeight="Bold" FontSize="18"
+                       HorizontalAlignment="Center" Margin="0,20"/>
+            <Separator Margin="0,10"/>
+            <Button Content="🏠 Trang chủ" Margin="0,5"/>
+            <Button Content="💬 Chat" Margin="0,5"/>
+            <Button Content="📹 Cuộc họp" Margin="0,5"/>
+            <Button Content="⚙️ Cài đặt" Margin="0,5"/>
+            <Button Content="👤 Hồ sơ" Margin="0,5"/>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,16 +1,188 @@
-﻿<Window x:Class="Online_Meeting.Views.MainWindow"
+﻿<Window x:Class="Online_Meeting.Client.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Online_Meeting"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Online Meeting App"
+        Height="720" Width="1280"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FA">
+
+    <Window.Resources>
+        <!-- Style cho sidebar buttons -->
+        <Style x:Key="SidebarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="Margin" Value="5,3"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A4A5C"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Style cho active button -->
+        <Style x:Key="ActiveButtonStyle" TargetType="Button" BasedOn="{StaticResource SidebarButtonStyle}">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5BA3F5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="33*"/>
-            <ColumnDefinition Width="367*"/>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Sidebar - THÊM x:Name="SidebarPanel" -->
+        <Border x:Name="SidebarPanel" 
+                Grid.Column="0" 
+                Background="#2C3E50"
+                Visibility="Collapsed">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" Opacity="0.2" BlurRadius="10" ShadowDepth="2"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <StackPanel Grid.Row="0" Margin="15,25,15,20">
+                    <TextBlock Text="📹 ONLINE MEETING"
+                               Foreground="White" 
+                               FontWeight="Bold" 
+                               FontSize="16"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,5"/>
+                    <TextBlock Text="Kết nối mọi lúc mọi nơi"
+                               Foreground="#95A5A6"
+                               FontSize="11"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Separator -->
+                <Border Grid.Row="0" 
+                        Height="1" 
+                        Background="#34495E" 
+                        VerticalAlignment="Bottom"
+                        Margin="15,0"/>
+
+                <!-- Menu Items -->
+                <ScrollViewer Grid.Row="1" 
+                            VerticalScrollBarVisibility="Auto"
+                            Margin="10,15,10,10">
+                    <StackPanel>
+                        <Button x:Name="btnHome" 
+                                Content="🏠  Trang chủ" 
+                                Style="{StaticResource ActiveButtonStyle}"
+                                Click="NavigateToHome"/>
+
+                        <Button x:Name="btnChat" 
+                                Content="💬  Tin nhắn" 
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="NavigateToChat"/>
+
+                        <Button x:Name="btnMeeting" 
+                                Content="📹  Cuộc họp" 
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="NavigateToMeeting"/>
+
+                        <Button x:Name="btnSchedule" 
+                                Content="📅  Lịch họp" 
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="NavigateToSchedule"/>
+
+                        <!-- Separator -->
+                        <Border Height="1" 
+                                Background="#34495E" 
+                                Margin="10,15"/>
+
+                        <Button x:Name="btnSettings" 
+                                Content="⚙️  Cài đặt" 
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="NavigateToSettings"/>
+
+                        <Button x:Name="btnProfile" 
+                                Content="👤  Hồ sơ" 
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="NavigateToProfile"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Footer -->
+                <Border Grid.Row="2" 
+                        Background="#34495E" 
+                        Padding="15"
+                        Margin="10,0,10,10"
+                        CornerRadius="8">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="40" Height="40" 
+                                Fill="#4A90E2"
+                                Margin="0,0,10,0">
+                            <Ellipse.Effect>
+                                <DropShadowEffect Color="#4A90E2" Opacity="0.5" BlurRadius="8"/>
+                            </Ellipse.Effect>
+                        </Ellipse>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Nguyễn Văn A" 
+                                     Foreground="White"
+                                     FontWeight="SemiBold"
+                                     FontSize="13"/>
+                            <TextBlock Text="● Online" 
+                                     Foreground="#2ECC71"
+                                     FontSize="11"
+                                     Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Main Content Area - THÊM x:Name="MainContentPanel" -->
+        <Grid x:Name="MainContentPanel" 
+              Grid.Column="1" 
+              Grid.ColumnSpan="2"
+              Margin="15">
+            <Border Background="White" 
+                    CornerRadius="12"
+                    Padding="0">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" Opacity="0.08" BlurRadius="15" ShadowDepth="2"/>
+                </Border.Effect>
+
+                <Frame x:Name="MainFrame"
+                       NavigationUIVisibility="Hidden"
+                       Background="Transparent"/>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

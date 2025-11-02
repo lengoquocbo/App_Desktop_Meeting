@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Client\ViewModels\" />
     <Folder Include="Client\Views\Resources\img\" />
     <Folder Include="Client\Views\Resources\icon\" />
   </ItemGroup>

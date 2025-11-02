@@ -1,9 +1,5 @@
-﻿<Application x:Class="Online_Meeting.App"
+﻿<Application x:Class="Online_Meeting.Client.Views.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Online_Meeting"
              StartupUri="MainWindow.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
 </Application>

@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET9_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 
-9137631729
+11-1642669977
 22-1348746614
-591423173932
+62-131613886
 238618554584
-Client\Views\App.xaml;Client\Views\GroupChatView.xaml;Client\Views\HomeView.xaml;Client\Views\LoginView.xaml;Client\Views\MainWindow.xaml;Client\Views\MeetingRoomView.xaml;Client\Views\ProfileView.xaml;Client\Views\RegisterView.xaml;Client\Views\SettingsView.xaml;
+Client\Views\App.xaml;Client\Views\MainWindow.xaml;Client\Views\Pages\ForgotPasswordView.xaml;Client\Views\Pages\GroupChatView.xaml;Client\Views\Pages\HomeView.xaml;Client\Views\Pages\LoginView.xaml;Client\Views\Pages\MeetingRoomView.xaml;Client\Views\Pages\ProfileView.xaml;Client\Views\Pages\RegisterView.xaml;Client\Views\Pages\SettingsView.xaml;Client\Views\UserControls\SidebarUserControl.xaml;
 
 False
 

@@ -8,8 +8,9 @@
         <Style TargetType="TextBox" x:Key="ModernTextBox">
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#DFE4EA"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="#2C3E50"/>
             <Setter Property="CaretBrush" Value="#3498DB"/>
         </Style>
@@ -17,8 +18,9 @@
         <Style TargetType="PasswordBox" x:Key="ModernPasswordBox">
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#DFE4EA"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="#2C3E50"/>
         </Style>
 
@@ -45,38 +47,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style TargetType="Button" x:Key="SocialButton">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E8EAED"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="12,10"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" CornerRadius="6"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                            Margin="{TemplateBinding Padding}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#F8F9FA"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="480"/>
         </Grid.ColumnDefinitions>
 
         <!-- Left Side - Branding -->
@@ -125,112 +101,87 @@
             </StackPanel>
         </Grid>
 
+
         <!-- Right Side - Register Form -->
         <Border Grid.Column="1" Background="White">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel VerticalAlignment="Center" Margin="50,40" MaxWidth="400">
+                <StackPanel VerticalAlignment="Center" Margin="50,40" MaxWidth="380">
                     <!-- Header -->
-                    <TextBlock Text="Tạo tài khoản" FontSize="28" FontWeight="Bold" 
+                    <TextBlock Text="Đăng ký" FontSize="28" FontWeight="Bold" 
                                Foreground="#2C3E50" Margin="0,0,0,8"/>
-                    <TextBlock Text="Điền thông tin để bắt đầu" FontSize="14" 
+                    <TextBlock Text="Điền thông tin để tạo tài khoản" FontSize="14" 
                                Foreground="#7F8C8D" Margin="0,0,0,30"/>
 
-                    <!-- Full Name -->
-                    <TextBlock Text="Họ và tên" FontSize="13" Foreground="#2C3E50"
-                               FontWeight="Medium" Margin="0,0,0,8"/>
-                    <Border BorderThickness="1" CornerRadius="6" BorderBrush="#DFE4EA" 
-                            Background="White" Margin="0,0,0,15">
-                        <Grid>
-                            <materialDesign:PackIcon Kind="Account" Width="18" Height="18" 
-                                                   Foreground="#95A5A6"
-                                                   VerticalAlignment="Center" 
-                                                   HorizontalAlignment="Left" Margin="12,0,0,0"/>
-                            <TextBox x:Name="txtFullName" Style="{StaticResource ModernTextBox}" 
-                                     Padding="40,10,12,10"/>
-                        </Grid>
-                    </Border>
-
-                    <!-- Username -->
+                    <!-- Username Field -->
                     <TextBlock Text="Tên đăng nhập" FontSize="13" Foreground="#2C3E50"
                                FontWeight="Medium" Margin="0,0,0,8"/>
                     <Border BorderThickness="1" CornerRadius="6" BorderBrush="#DFE4EA" 
                             Background="White" Margin="0,0,0,15">
                         <Grid>
-                            <materialDesign:PackIcon Kind="AccountCircle" Width="18" Height="18" 
-                                                   Foreground="#95A5A6"
-                                                   VerticalAlignment="Center" 
-                                                   HorizontalAlignment="Left" Margin="12,0,0,0"/>
+                            <materialDesign:PackIcon Kind="Account" Width="18" Height="18" 
+                                                     Foreground="#95A5A6"
+                                                     VerticalAlignment="Center" 
+                                                     HorizontalAlignment="Left" Margin="12,0,0,0"/>
                             <TextBox x:Name="txtUsername" Style="{StaticResource ModernTextBox}" 
-                                     Padding="40,10,12,10"/>
+                                     Padding="40,10,12,10" BorderThickness="0"/>
                         </Grid>
                     </Border>
 
-                    <!-- Email -->
+                    <!-- Email Field -->
                     <TextBlock Text="Email" FontSize="13" Foreground="#2C3E50"
                                FontWeight="Medium" Margin="0,0,0,8"/>
                     <Border BorderThickness="1" CornerRadius="6" BorderBrush="#DFE4EA" 
                             Background="White" Margin="0,0,0,15">
                         <Grid>
                             <materialDesign:PackIcon Kind="Email" Width="18" Height="18" 
-                                                   Foreground="#95A5A6"
-                                                   VerticalAlignment="Center" 
-                                                   HorizontalAlignment="Left" Margin="12,0,0,0"/>
+                                                     Foreground="#95A5A6"
+                                                     VerticalAlignment="Center" 
+                                                     HorizontalAlignment="Left" Margin="12,0,0,0"/>
                             <TextBox x:Name="txtEmail" Style="{StaticResource ModernTextBox}" 
-                                     Padding="40,10,12,10"/>
+                                     Padding="40,10,12,10" BorderThickness="0"/>
                         </Grid>
                     </Border>
 
-                    <!-- Password -->
+                    <!-- Password Field -->
                     <TextBlock Text="Mật khẩu" FontSize="13" Foreground="#2C3E50"
                                FontWeight="Medium" Margin="0,0,0,8"/>
                     <Border BorderThickness="1" CornerRadius="6" BorderBrush="#DFE4EA" 
                             Background="White" Margin="0,0,0,15">
                         <Grid>
                             <materialDesign:PackIcon Kind="Lock" Width="18" Height="18" 
-                                                   Foreground="#95A5A6"
-                                                   VerticalAlignment="Center" 
-                                                   HorizontalAlignment="Left" Margin="12,0,0,0"/>
+                                                     Foreground="#95A5A6"
+                                                     VerticalAlignment="Center" 
+                                                     HorizontalAlignment="Left" Margin="12,0,0,0"/>
                             <PasswordBox x:Name="txtPassword" Style="{StaticResource ModernPasswordBox}" 
-                                       Padding="40,10,12,10"/>
+                                         Padding="40,10,12,10" BorderThickness="0"/>
                         </Grid>
                     </Border>
 
-                    <!-- Confirm Password -->
+                    <!-- Confirm Password Field -->
                     <TextBlock Text="Xác nhận mật khẩu" FontSize="13" Foreground="#2C3E50"
                                FontWeight="Medium" Margin="0,0,0,8"/>
                     <Border BorderThickness="1" CornerRadius="6" BorderBrush="#DFE4EA" 
-                            Background="White" Margin="0,0,0,15">
+                            Background="White" Margin="0,0,0,20">
                         <Grid>
                             <materialDesign:PackIcon Kind="LockCheck" Width="18" Height="18" 
-                                                   Foreground="#95A5A6"
-                                                   VerticalAlignment="Center" 
-                                                   HorizontalAlignment="Left" Margin="12,0,0,0"/>
+                                                     Foreground="#95A5A6"
+                                                     VerticalAlignment="Center" 
+                                                     HorizontalAlignment="Left" Margin="12,0,0,0"/>
                             <PasswordBox x:Name="txtConfirmPassword" Style="{StaticResource ModernPasswordBox}" 
-                                       Padding="40,10,12,10"/>
+                                         Padding="40,10,12,10" BorderThickness="0"/>
                         </Grid>
                     </Border>
-
-                    <!-- Terms & Conditions -->
-                    <CheckBox x:Name="chkTerms" Margin="0,5,0,0" Foreground="#2C3E50" FontSize="13">
-                        <TextBlock TextWrapping="Wrap">
-                            <Run Text="Tôi đồng ý với "/>
-                            <Hyperlink Foreground="#3498DB" TextDecorations="None">
-                                <Run Text="Điều khoản" FontWeight="SemiBold"/>
-                            </Hyperlink>
-                            <Run Text=" và "/>
-                            <Hyperlink Foreground="#3498DB" TextDecorations="None">
-                                <Run Text="Chính sách" FontWeight="SemiBold"/>
-                            </Hyperlink>
-                        </TextBlock>
-                    </CheckBox>
+                    <CheckBox x:Name="chkTerms"
+          Content="Tôi đồng ý với điều khoản sử dụng"
+          Margin="0,10,0,0"/>
 
                     <!-- Register Button -->
-                    <Button Content="Tạo tài khoản" Style="{StaticResource PrimaryButton}"
-                            Width="400" HorizontalAlignment="Stretch" Margin="0,20,0,15"
-                            Click="RegisterButton_Click" Height="39"/>
+                    <Button Content="Đăng ký" Style="{StaticResource PrimaryButton}"
+                            Width="380" HorizontalAlignment="Stretch" Margin="0,0,0,15"
+                            Click="RegisterButton_Click" Height="44"/>
 
                     <!-- Login Link -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,25">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
                         <TextBlock Text="Đã có tài khoản?" Foreground="#7F8C8D" FontSize="13"/>
                         <Button Content="Đăng nhập ngay" Background="Transparent" Foreground="#3498DB"
                                 BorderThickness="0" FontSize="13" FontWeight="SemiBold" Cursor="Hand"
@@ -248,41 +199,6 @@
                             </Button.Style>
                         </Button>
                     </StackPanel>
-
-                    <!-- Divider -->
-                    <Grid Margin="0,0,0,20">
-                        <Separator VerticalAlignment="Center" Background="#E8EAED"/>
-                        <TextBlock Text="Hoặc đăng ký với" Padding="12,0"
-                                   FontSize="12" Foreground="#95A5A6" 
-                                   HorizontalAlignment="Center" Background="White"/>
-                    </Grid>
-
-                    <!-- Social Register -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="15"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Grid.Column="0" Height="44" Style="{StaticResource SocialButton}">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <materialDesign:PackIcon Kind="Google" Width="20" Height="20" 
-                                                       Foreground="#DB4437"/>
-                                <TextBlock Text="Google" Margin="8,0,0,0" Foreground="#2C3E50" 
-                                           FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Grid.Column="2" Height="44" Style="{StaticResource SocialButton}">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <materialDesign:PackIcon Kind="Microsoft" Width="20" Height="20" 
-                                                       Foreground="#00A4EF"/>
-                                <TextBlock Text="Microsoft" Margin="8,0,0,0" Foreground="#2C3E50" 
-                                           FontSize="13" FontWeight="Medium" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </Grid>
                 </StackPanel>
             </ScrollViewer>
         </Border>

@@ -1,179 +1,88 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Input;
+﻿using Online_Meeting.Client.Models.Request;
+using Online_Meeting.Client.Models.Responses;
+using Online_Meeting.Client.Services;
+using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public class LoginViewModel : ViewModelBase
     {
-        // Hardcoded credentials for testing
-        private const string VALID_USERNAME = "admin";
-        private const string VALID_PASSWORD = "123456";
+        private readonly IAuthService _authService;
 
         private string _username;
         private string _password;
-        private bool _rememberMe;
+        private bool _isLoading;
         private string _errorMessage;
 
         public LoginViewModel()
         {
-            LoginCommand = new RelayCommand(ExecuteLogin, CanExecuteLogin);
-            RegisterCommand = new RelayCommand(ExecuteRegister);
-            ForgotPasswordCommand = new RelayCommand(ExecuteForgotPassword);
+            _authService = new AuthService();
         }
-
-        #region Properties
 
         public string Username
         {
             get => _username;
-            set
-            {
-                _username = value;
-                OnPropertyChanged();
-                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
-            }
+            set => SetProperty(ref _username, value);
         }
 
         public string Password
         {
             get => _password;
-            set
-            {
-                _password = value;
-                OnPropertyChanged();
-                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
-            }
+            set => SetProperty(ref _password, value);
         }
 
-        public bool RememberMe
+        public bool IsLoading
         {
-            get => _rememberMe;
-            set
-            {
-                _rememberMe = value;
-                OnPropertyChanged();
-            }
+            get => _isLoading;
+            set => SetProperty(ref _isLoading, value);
         }
 
         public string ErrorMessage
         {
             get => _errorMessage;
-            set
-            {
-                _errorMessage = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _errorMessage, value);
         }
 
-        #endregion
-
-        #region Commands
-
-        public ICommand LoginCommand { get; }
-        public ICommand RegisterCommand { get; }
-        public ICommand ForgotPasswordCommand { get; }
-
-        #endregion
-
-        #region Command Methods
-
-        private bool CanExecuteLogin(object parameter)
-        {
-            return !string.IsNullOrWhiteSpace(Username) &&
-                   !string.IsNullOrWhiteSpace(Password);
-        }
-
-        private void ExecuteLogin(object parameter)
+        public async Task<AuthResponse> LoginAsync()
         {
             ErrorMessage = string.Empty;
 
-            // Validate with hardcoded credentials
-            if (Username == VALID_USERNAME && Password == VALID_PASSWORD)
+            // Validation client
+            if (string.IsNullOrWhiteSpace(Username))
             {
-                // Login successful
-                MessageBox.Show($"Đăng nhập thành công!\nChào mừng {Username}!",
-                    "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                ErrorMessage = "Vui lòng nhập tên đăng nhập";
+                return new AuthResponse { IsSuccess = false, ErrorMessage = ErrorMessage };
+            }
 
-                // TODO: Navigate to main view
-                // Get MainWindow and call ShowMainContent
-                var mainWindow = Application.Current.MainWindow as Views.MainWindow;
-                mainWindow?.ShowMainContent();
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Vui lòng nhập mật khẩu";
+                return new AuthResponse { IsSuccess = false, ErrorMessage = ErrorMessage };
+            }
 
-                // TODO: Save remember me preference if needed
-                if (RememberMe)
+            IsLoading = true;
+
+            try
+            {
+                var request = new LoginRequest
                 {
-                    // Save credentials to settings or secure storage
+                    Username = Username,
+                    Password = Password
+                };
+
+                var response = await _authService.LoginAsync(request);
+
+                if (!response.IsSuccess)
+                {
+                    ErrorMessage = response.ErrorMessage;
                 }
+
+                return response;
             }
-            else
+            finally
             {
-                ErrorMessage = "Tên đăng nhập hoặc mật khẩu không đúng!";
-                MessageBox.Show(ErrorMessage, "Lỗi đăng nhập",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                IsLoading = false;
             }
         }
-
-        private void ExecuteRegister(object parameter)
-        {
-            // TODO: Navigate to Register page
-            // This will be handled by the View's code-behind
-            MessageBox.Show("Chuyển đến trang đăng ký", "Thông báo",
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void ExecuteForgotPassword(object parameter)
-        {
-            MessageBox.Show("Chức năng quên mật khẩu đang được phát triển.\n\n" +
-                          "Liên hệ admin để được hỗ trợ.", "Thông báo",
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
     }
-
-    #region RelayCommand Helper Class
-
-    public class RelayCommand : ICommand
-    {
-        private readonly Action<object> _execute;
-        private readonly Func<object, bool> _canExecute;
-
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
-        {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
-        }
-
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute == null || _canExecute(parameter);
-        }
-
-        public void Execute(object parameter)
-        {
-            _execute(parameter);
-        }
-
-        public void RaiseCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    #endregion
 }

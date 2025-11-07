@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Online_Meeting.Client.Dtos.AccountDto;
 using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Interfaces
 {
-    internal interface IAuthService
+    public interface IAuthService
     {
+        Task<AuthResponse> LoginAsync(LoginRequest request);
+        Task<AuthResponse> RegisterAsync(RegisterRequest request);
+
     }
 }

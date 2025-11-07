@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Online_Meeting.Client.Models.Responses
+namespace Online_Meeting.Client.Dtos.AccountDto
 {
     public class AuthResponse
     {

@@ -1,12 +1,11 @@
-﻿using Online_Meeting.Client.Models.Request;
-using Online_Meeting.Client.Models.Responses;
-using Online_Meeting.Client.Services.ApiService;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using Online_Meeting.Client.Interfaces;
+using Online_Meeting.Client.Dtos.AccountDto;
 
 
 namespace Online_Meeting.Client.Services

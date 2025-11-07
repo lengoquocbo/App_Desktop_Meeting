@@ -1,7 +1,8 @@
-﻿using Online_Meeting.Client.Models.Request;
-using Online_Meeting.Client.Models.Responses;
+﻿using Online_Meeting.Client.Dtos.AccountDto;
+using Online_Meeting.Client.Dtos;
 using Online_Meeting.Client.Services;
 using System.Threading.Tasks;
+using Online_Meeting.Client.Interfaces;
 
 namespace Online_Meeting.Client.ViewModels
 {
@@ -77,6 +78,7 @@ namespace Online_Meeting.Client.ViewModels
                     ErrorMessage = response.ErrorMessage;
                 }
 
+                
                 return response;
             }
             finally

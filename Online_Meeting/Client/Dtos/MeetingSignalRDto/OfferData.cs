@@ -8,5 +8,9 @@ namespace Online_Meeting.Client.Dtos.MeetingSignalRDto
 {
     internal class OfferData
     {
+        public string FromConnectionId { get; set; }
+        public Guid FromUserId { get; set; }
+        public string FromUsername { get; set; }
+        public object Offer { get; set; }
     }
 }

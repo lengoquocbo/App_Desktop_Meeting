@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36603.0 d17.14
+VisualStudioVersion = 17.14.36603.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Online_Meeting", "Online_Meeting\Online_Meeting.csproj", "{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerSignaling_Meeting", "..\Server_Signaling_Meeting\ServerSignaling_Meeting\ServerSignaling_Meeting.csproj", "{017D2E1B-3725-9367-2DB9-C731865C5A3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C65B127-F7FF-47A1-8FE5-B390CFCD027E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{017D2E1B-3725-9367-2DB9-C731865C5A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{017D2E1B-3725-9367-2DB9-C731865C5A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{017D2E1B-3725-9367-2DB9-C731865C5A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{017D2E1B-3725-9367-2DB9-C731865C5A3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

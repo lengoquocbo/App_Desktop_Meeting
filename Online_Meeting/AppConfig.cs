@@ -6,6 +6,8 @@ namespace Online_Meeting.Client
     public static class AppConfig
     {
         public static IConfigurationRoot Configuration { get; }
+        public const string BaseUrl = "https://localhost:7201";
+
 
         static AppConfig()
         {

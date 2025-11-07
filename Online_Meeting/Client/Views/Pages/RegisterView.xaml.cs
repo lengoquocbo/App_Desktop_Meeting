@@ -57,5 +57,10 @@ namespace Online_Meeting.Client.Views.Pages
         {
             NavigationService?.Navigate(new LoginView());
         }
+
+        private void txtEmail_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

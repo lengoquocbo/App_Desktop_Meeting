@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Dtos.MeetingSignalRDto
 {
-    internal class ExistingParticipant
+    internal class ExistingParticipantData
     {
+        public List<ParticipantInfo> Participants { get; set; }
     }
 }

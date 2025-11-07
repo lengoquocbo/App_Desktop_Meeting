@@ -8,5 +8,15 @@ namespace Online_Meeting.Client.Dtos.MeetingDto
 {
     internal class MeetingRoomDetail
     {
+        public Guid Id { get; set; }
+        public string RoomKey { get; set; }
+        public string RoomName { get; set; }
+        public int Max { get; set; }
+        public bool IsActive { get; set; }
+        public int CurrentParticipants { get; set; }
+        public bool? IsFull { get; set; }
+        public bool? CanJoin { get; set; }
+        public DateTime? CreateAt { get; set; }
+
     }
 }

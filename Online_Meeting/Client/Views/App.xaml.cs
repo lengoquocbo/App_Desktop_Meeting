@@ -10,6 +10,13 @@ namespace Online_Meeting.Client.Views
     {
         public static IServiceProvider Services { get; private set; }
 
+        [STAThread]
+        public static void Main()
+        {
+            var app = new App();
+            app.InitializeComponent(); // load App.xaml
+            app.Run();
+        }
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -34,6 +41,9 @@ namespace Online_Meeting.Client.Views
                 .AddHttpMessageHandler<AuthHttpClientHandler>();
 
             Services = sc.BuildServiceProvider();
+
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
         }
     }
 }

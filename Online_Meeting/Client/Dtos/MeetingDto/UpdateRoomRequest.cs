@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Dtos.MeetingDto
 {
-    internal class UpdateRoomRequest
+    public class UpdateRoomRequest
     {
+        public string? RoomName { get; set; }
+        public int? MaxParticipants { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

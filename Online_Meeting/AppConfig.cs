@@ -19,9 +19,11 @@ namespace Online_Meeting.Client
 
         // API Settings
         public static string ApiBaseUrl => Configuration["ApiBaseUrl"];
+       
         public static int ApiTimeout => int.Parse(Configuration["ApiSettings:Timeout"] ?? "30");
         public static int MaxRetries => int.Parse(Configuration["ApiSettings:MaxRetries"] ?? "3");
         public static bool EnableLogging => bool.Parse(Configuration["ApiSettings:EnableLogging"] ?? "true");
+        public static string MeetingBaseUrl => Configuration["MeetingBaseUrl"];
 
         // Authentication
         public static string TokenKey => Configuration["Authentication:TokenKey"];

@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Online_Meeting.Client.Dtos.MeetingDto
+{
+    internal class CreateRoomRequest
+    {
+        public string RoomName { get; set; }
+        public int MaxParticipants { get; set; }
+    }
+}

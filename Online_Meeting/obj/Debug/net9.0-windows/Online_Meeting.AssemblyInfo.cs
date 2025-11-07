@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Online_Meeting")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0a7c6469e13bd4e10e33490d61f3481a97d04ab1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67c3a418b088fa36fa0f612e4ce226312e29c2b1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Online_Meeting")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Online_Meeting")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

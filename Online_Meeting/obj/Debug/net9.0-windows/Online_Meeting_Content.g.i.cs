@@ -30,5 +30,8 @@
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("robotocondensed-light.ttf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("robotocondensed-lightitalic.ttf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("robotocondensed-regular.ttf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("webview2loader.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("webview2loader.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("webview2loader.dll")]
 
 

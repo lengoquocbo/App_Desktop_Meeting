@@ -53,7 +53,7 @@ namespace Online_Meeting.Client.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Online_Meeting;component/client/views/pages/profileview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Online_Meeting;V1.0.0.0;component/client/views/pages/profileview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\..\Client\Views\Pages\ProfileView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

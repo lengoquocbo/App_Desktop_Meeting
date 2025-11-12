@@ -34,6 +34,8 @@ namespace Online_Meeting.Client.Views.Pages
                 // Gọi ShowMainContent ở MainWindow hiện tại
                 var mainWindow = Application.Current.MainWindow as MainWindow;
                 mainWindow?.ShowMainContent();
+                mainWindow?.SetUsername(response.UserName);
+
             }
             else
             {

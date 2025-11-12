@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Client\Views\Assets\Avatars\" />
     <Folder Include="Client\Views\Resources\img\" />
     <Folder Include="Client\Views\Resources\icon\" />
   </ItemGroup>

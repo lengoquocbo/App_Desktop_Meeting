@@ -1,0 +1,196 @@
+﻿<Window x:Class="Online_Meeting.Client.Views.Dialogs.CreateGroupDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create New Group"
+        Height="520" Width="500"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize">
+
+    <!-- ========== STYLES ========== -->
+    <Window.Resources>
+        <!-- Primary Button -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5BA3F5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Secondary Button -->
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#F0F3F7"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E5E9EF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- TextBox -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="BorderBrush" Value="#E0E3E8"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#4A90E2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <!-- ========== DIALOG CONTAINER ========== -->
+    <Border Background="White" CornerRadius="16" Margin="10">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Opacity="0.2" BlurRadius="30" ShadowDepth="0"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- ===== HEADER ===== -->
+            <Border Grid.Row="0" Background="#F8FAFC" CornerRadius="16,16,0,0" Padding="24,20">
+                <Grid>
+                    <StackPanel>
+                        <TextBlock Text="Create New Group" FontSize="22" FontWeight="Bold" Foreground="#2C3E50"/>
+                        <TextBlock Text="Start a new conversation with your team"
+                                   FontSize="13" Foreground="#95A5A6" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Width="32" Height="32"
+                            Background="Transparent" BorderThickness="0" Cursor="Hand"
+                            Click="CloseButton_Click">
+                        <TextBlock Text="✕" FontSize="18" Foreground="#95A5A6"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- ===== CONTENT ===== -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="24,20">
+                <StackPanel>
+
+                    <!-- Avatar hiển thị -->
+                    <StackPanel HorizontalAlignment="Center" Margin="0,0,0,24">
+                        <Border x:Name="AvatarBorder"
+                                Width="100" Height="100"
+                                CornerRadius="50"
+                                Background="#E3F2FD"
+                                BorderBrush="#4A90E2"
+                                BorderThickness="3"
+                                Margin="0,0,0,12">
+                            <TextBlock x:Name="AvatarText"
+                                       Text="📷" FontSize="36"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontWeight="Bold" Foreground="Black"/>
+                        </Border>
+                        <Button Content="Choose Avatar"
+                                Background="Transparent"
+                                Foreground="#4A90E2"
+                                BorderThickness="0"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Cursor="Hand"/>
+                        <!-- Click="ChooseAvatarButton_Click--> 
+                    </StackPanel>
+
+                    <!-- Danh sách ảnh (ẩn khi chưa chọn) -->
+                    <WrapPanel x:Name="AvatarListPanel"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,20"/>
+
+                    <!-- Group Name -->
+                    <TextBlock Text="Group Name *"
+                               FontSize="14" FontWeight="SemiBold"
+                               Foreground="#2C3E50"
+                               Margin="0,0,0,8"/>
+                    <TextBox x:Name="GroupNameTextBox"
+                             Style="{StaticResource ModernTextBox}"
+                             MaxLength="50"
+                             TextChanged="GroupNameTextBox_TextChanged"
+                             Margin="0,0,0,20"/>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ===== FOOTER ===== -->
+            <Border Grid.Row="2"
+                    Background="#F8FAFC"
+                    CornerRadius="0,0,16,16"
+                    Padding="24,16"
+                    BorderBrush="#E0E3E8"
+                    BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            Content="Cancel"
+                            Style="{StaticResource SecondaryButton}"
+                            HorizontalAlignment="Left"
+                            Click="CancelButton_Click"/>
+
+                    <Button Grid.Column="1"
+                            Content="Create Group"
+                            Style="{StaticResource ModernButton}"
+                            Click="CreateButton_Click"/>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </Border>
+</Window>

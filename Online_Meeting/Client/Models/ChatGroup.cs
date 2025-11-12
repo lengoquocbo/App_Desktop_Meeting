@@ -4,9 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Online_Meeting.Share.Models
+namespace Online_Meeting.Client.Models
 {
-    internal class ChatGroup
+    public class ChatGroup
     {
+        public Guid Id { get; set; }
+        public string GroupKey { get; set; }
+        public string GroupName { get; set; }
+        public string Status { get; set; }
+
     }
 }

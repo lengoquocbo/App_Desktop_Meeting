@@ -12,6 +12,7 @@ namespace Online_Meeting.Client.Dtos.AccountDto
         public string Email { get; set; }
         public string Token { get; set; }
 
+
         // Optional: để thông báo UI cho dễ
         public bool IsSuccess { get; set; }
         public string ErrorMessage { get; set; }

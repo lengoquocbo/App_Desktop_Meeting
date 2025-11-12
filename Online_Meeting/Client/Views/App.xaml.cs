@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Online_Meeting.Client.Services;
-using System.Windows;
-using Refit;
 using Online_Meeting.Client.Interfaces;
+using Online_Meeting.Client.Services;
+using Online_Meeting.Client.Views.Dialogs;
+using Online_Meeting.Client.Views.Pages;
+using Refit;
+using System.Windows;
 
 namespace Online_Meeting.Client.Views
 {
@@ -16,6 +18,8 @@ namespace Online_Meeting.Client.Views
             var app = new App();
             app.InitializeComponent(); // load App.xaml
             app.Run();
+            var TokenService = new TokenService();
+
         }
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -28,6 +32,9 @@ namespace Online_Meeting.Client.Views
             sc.AddSingleton<TokenService>();
             sc.AddSingleton<AuthService>();
             sc.AddSingleton<MeetingSignalRServices>();
+            sc.AddTransient<GroupChatView>();
+            sc.AddTransient<CreateGroupDialog>();
+
 
             sc.AddHttpClient("ApiClient", client =>
             {
@@ -36,6 +43,13 @@ namespace Online_Meeting.Client.Views
             })
             .AddHttpMessageHandler<AuthHttpClientHandler>();
 
+
+            // Refit client cho IGroupService
+            sc.AddRefitClient<IGroupService>()
+              .ConfigureHttpClient(c => c.BaseAddress = new Uri(AppConfig.ApiBaseUrl))
+              .AddHttpMessageHandler<AuthHttpClientHandler>();
+
+            // Refit client cho IMeetingService
             sc.AddRefitClient<IMeetingService>()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(AppConfig.ApiBaseUrl))
                 .AddHttpMessageHandler<AuthHttpClientHandler>();

@@ -295,8 +295,8 @@
                                 Tag="Dev Team">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="68*"/>
+                                    <ColumnDefinition Width="215*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
@@ -549,8 +549,8 @@
                                    Content="📹"/>
                                 <Button Style="{StaticResource IconButton}"
                                    ToolTip="Group Info"
-                                   Content="ℹ️"
-                                   Click="GroupInfoButton_Click"/>
+                                   Content="ℹ️"/>
+                                   <!--Click="GroupInfoButton_Click"-->
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -609,7 +609,7 @@
                                    Height="44"
                                    Cursor="Hand"
                                    ToolTip="Send">
-                               <!--  CHO NÀY BO ƠI  Click="SendMessageButton_Click" -->     
+                                    <!--  CHO NÀY BO ƠI  Click="SendMessageButton_Click" -->
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"
@@ -628,7 +628,7 @@
                         </Grid>
                     </Border>
 
-                </Grid> 
+                </Grid>
             </Grid>
         </Border>
 

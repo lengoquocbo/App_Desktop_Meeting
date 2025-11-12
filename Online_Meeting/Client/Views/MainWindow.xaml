@@ -153,10 +153,11 @@
                             </Ellipse.Effect>
                         </Ellipse>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Nguyễn Văn A" 
-                                     Foreground="White"
-                                     FontWeight="SemiBold"
-                                     FontSize="13"/>
+                            <TextBlock x:Name="txtUsername"
+                                       Text="Đang tải..."
+                                       Foreground="White"
+                                       FontWeight="SemiBold"
+                                       FontSize="13"/>
                             <TextBlock Text="● Online" 
                                      Foreground="#2ECC71"
                                      FontSize="11"

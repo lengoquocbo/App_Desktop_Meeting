@@ -13,20 +13,31 @@ namespace Online_Meeting.Client.Services
     public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
+        private readonly ITokenService _token;
 
-        public AuthService()
+
+
+
+
+        public AuthService(TokenService tokenService)
         {
             _httpClient = new HttpClient
             {
                 BaseAddress = new Uri(AppConfig.ApiBaseUrl),
                 Timeout = TimeSpan.FromSeconds(AppConfig.ApiTimeout)
             };
+            _token = tokenService;
         }
 
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
         {
             try
             {
+                // DEBUG: Log URL thực tế
+                var fullUrl = new Uri(_httpClient.BaseAddress, AppConfig.Endpoints.Login);
+                Debug.WriteLine($"BaseAddress: {_httpClient.BaseAddress}");
+                Debug.WriteLine($"Endpoint: {AppConfig.Endpoints.Login}");
+                Debug.WriteLine($"Full URL: {fullUrl}");
                 var json = JsonSerializer.Serialize(request);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -43,8 +54,10 @@ namespace Online_Meeting.Client.Services
                     data.IsSuccess = true;
                   // GỌI  deserialize thành công
                 if (!string.IsNullOrEmpty(data.Token))
+
                     {
-                        TokenStorageService.SaveToken(data.Token);
+                        _token.SaveTokens(data.UserName,data.Token, "");
+                        // TokenStorageService.SaveToken(data.Token);
                         Debug.WriteLine("Token đã được lưu vào bộ nhớ cục bộ.");
                     }
 
@@ -59,11 +72,12 @@ namespace Online_Meeting.Client.Services
             }
             catch (Exception ex)
             {
-                return new AuthResponse
-                {
-                    IsSuccess = false,
-                    ErrorMessage = $"Lỗi kết nối: {ex.Message}"
-                };
+               Debug.WriteLine($"Exception: {ex.Message}");
+        return new AuthResponse
+        {
+            IsSuccess = false,
+            ErrorMessage = $"Lỗi kết nối: {ex.Message}"
+        };
             }
         }
 

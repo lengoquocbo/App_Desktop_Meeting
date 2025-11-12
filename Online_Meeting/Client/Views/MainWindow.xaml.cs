@@ -1,4 +1,5 @@
-﻿using Online_Meeting.Client.Views.Pages;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Online_Meeting.Client.Views.Pages;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -42,6 +43,7 @@ namespace Online_Meeting.Client.Views
             MainFrame.Navigate(new HomeView());
         }
 
+
         private void SetActiveButton(Button activeButton)
         {
             // Reset tất cả buttons về style mặc định
@@ -55,6 +57,11 @@ namespace Online_Meeting.Client.Views
             // Set active style cho button được chọn
             activeButton.Style = (Style)FindResource("ActiveButtonStyle");
         }
+        public void SetUsername(string username)
+        {
+            txtUsername.Text = username;
+        }
+
 
         private void NavigateToHome(object sender, RoutedEventArgs e)
         {
@@ -65,9 +72,18 @@ namespace Online_Meeting.Client.Views
         private void NavigateToChat(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnChat);
-            MainFrame.Navigate(new GroupChatView());
-        }
 
+            // Resolve GroupChatView từ DI container
+            var view = App.Services.GetService<GroupChatView>();
+            if (view != null)
+            {
+                MainFrame.Navigate(view);
+            }
+            else
+            {
+                MessageBox.Show("Cannot navigate to GroupChatView. Service not registered.");
+            }
+        }
         private void NavigateToMeeting(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnMeeting);

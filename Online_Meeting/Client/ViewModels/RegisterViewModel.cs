@@ -19,7 +19,8 @@ namespace Online_Meeting.Client.ViewModels
 
         public RegisterViewModel()
         {
-            _authService = new AuthService();
+            var tokenService = new TokenService(); // tạo instance TokenService
+            _authService = new AuthService(tokenService);
         }
 
         public string Username

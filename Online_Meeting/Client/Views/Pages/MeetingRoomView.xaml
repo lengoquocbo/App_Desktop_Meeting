@@ -133,6 +133,7 @@
                         </Border>
 
                         <!-- Title -->
+                        <!-- Title -->
                         <TextBlock Text="Create Meeting" 
                                   FontSize="24" 
                                   FontWeight="SemiBold" 
@@ -146,15 +147,41 @@
                                   Foreground="#7F8C8D"
                                   TextAlignment="Center"
                                   TextWrapping="Wrap"
-                                  Margin="0,0,0,30"
+                                  Margin="0,0,0,20"
                                   MaxWidth="300"/>
+
+                        <!-- Room Key Input
+                        <TextBlock Text="Mã phòng (tự động):" 
+                                  FontSize="14" 
+                                  Foreground="#555555"
+                                  Margin="0,0,0,8"/>
+
+                        <TextBox x:Name="RoomKeyTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Margin="0,0,0,15"
+                                IsReadOnly="True"
+                                TextAlignment="Center"
+                                FontWeight="Medium"
+                                Background="#F0F0F0"/> -->
+
+                        <!-- Room Name Input -->
+                        <TextBlock Text="Tên phòng họp:" 
+                                  FontSize="14" 
+                                  Foreground="#555555"
+                                  Margin="0,0,0,8"/>
+
+                        <TextBox x:Name="RoomNameTextBox"
+                                Style="{StaticResource ModernTextBox}"
+                                Margin="0,0,0,20"
+                                MaxLength="50"
+                                TextAlignment="Center"/>
 
                         <!-- Create Button -->
                         <Button Content="Tạo Cuộc Họp" 
                                Style="{StaticResource ModernButton}"
                                Background="#2196F3"
-                               HorizontalAlignment="Center"/>
-                      <!--  Click="CreateMeeting_Click"-->
+                               HorizontalAlignment="Center"  />
+                              <!-- Click="CreateMeeting_Click"-->  
                     </StackPanel>
                 </Border>
 

@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Client\Views\CallScreenView\style.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Client\Views\Assets\Avatars\" />
     <Folder Include="Client\Views\Resources\img\" />
     <Folder Include="Client\Views\Resources\icon\" />
@@ -28,12 +32,14 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3595.46" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Refit" Version="8.0.0" />
     <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
     <PackageReference Include="SIPSorcery.OpenAI.WebRTC" Version="8.0.4" />
     <PackageReference Include="SIPSorceryMedia.Encoders" Version="8.0.7" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

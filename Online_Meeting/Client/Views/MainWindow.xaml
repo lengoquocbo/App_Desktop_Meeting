@@ -114,7 +114,7 @@
                         <Button x:Name="btnMeeting" 
                                 Content="📹  Cuộc họp" 
                                 Style="{StaticResource SidebarButtonStyle}"
-                                Click="NavigateToMeeting"/>
+                                Click="NavigateToMeetingPage"/>
 
                         <Button x:Name="btnSchedule" 
                                 Content="📅  Lịch họp" 

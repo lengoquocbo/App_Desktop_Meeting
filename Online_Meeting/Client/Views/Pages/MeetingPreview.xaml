@@ -1,0 +1,27 @@
+﻿<Window x:Class="Online_Meeting.Client.Views.Dialogs.MeetingPreview"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="Meeting Preview"
+        Height="560" Width="820"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F6F9"
+        Foreground="#222222">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- WebView2 host the HTML preview -->
+        <wv2:WebView2 x:Name="PreviewWebView"
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"                   
+            NavigationCompleted="PreviewWebView_NavigationCompleted"/>
+
+    </Grid>
+
+</Window>

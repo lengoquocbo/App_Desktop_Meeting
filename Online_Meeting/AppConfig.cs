@@ -6,7 +6,8 @@ namespace Online_Meeting.Client
     public static class AppConfig
     {
         public static IConfigurationRoot Configuration { get; }
-        public const string BaseUrl = "https://localhost:7201";
+        public const string BaseUrl = "https://keshia-overstrung-overnegligently.ngrok-free.dev";
+        public static string serverOrigin = "";
 
 
         static AppConfig()
@@ -24,6 +25,7 @@ namespace Online_Meeting.Client
         public static int MaxRetries => int.Parse(Configuration["ApiSettings:MaxRetries"] ?? "3");
         public static bool EnableLogging => bool.Parse(Configuration["ApiSettings:EnableLogging"] ?? "true");
         public static string MeetingBaseUrl => Configuration["MeetingBaseUrl"];
+        public static string ChatBaseUrl => Configuration["ChatBaseUrl"];
 
         // Authentication
         public static string TokenKey => Configuration["Authentication:TokenKey"];

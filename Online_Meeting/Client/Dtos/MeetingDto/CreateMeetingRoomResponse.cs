@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Dtos.MeetingDto
 {
-    internal class CreateMeetingRoomResponse
+    public class CreateMeetingRoomResponse
     {
         public Guid Id { get; set; }
         public string RoomKey { get; set; }

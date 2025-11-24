@@ -6,13 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Online_Meeting.Client.Dtos.MeetingSignalRDto;
 using System.Windows;
+using Online_Meeting.Client.Interfaces;
 
 namespace Online_Meeting.Client.Services
 {
-    internal class MeetingSignalRServices
+    public class MeetingSignalRServices
     {
         private HubConnection _hubConnection;
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
+        private bool _isIntentionalDisconnect = false; // Cờ đánh dấu chủ động ngắt
 
         public event Action<ExistingParticipantData> OnExistingParticipant;
         public event Action<UserJoinData> OnUserJoined;
@@ -23,11 +25,17 @@ namespace Online_Meeting.Client.Services
         public event Action<MediaToggleData> OnCameraToggled;
         public event Action<MediaToggleData> OnMicrophoneToggled;
         public event Action<MediaToggleData> OnScreenShareToggled;
+        public event Action<ChatMessageData> OnChatMessageReceived;
         public event Action<string> OnError;
+        public event Action OnYouAreWaiting; // Báo cho Guest biết mình đang phải chờ
+        public event Action<UserJoinData> OnGuestRequested; // Báo cho Host biết có người xin vào
+        public event Action<string> OnGuestAdmitted; // Báo khi ai đó được duyệt (để update UI waiting list)
+        public event Action OnYouAreRejected; // Báo cho Guest bị từ chối
+        public event Action<string> OnMeetingEnded; // Event khi host out hoặc tắt
 
         public bool Isconnected => _hubConnection?.State == HubConnectionState.Connected;
 
-        public MeetingSignalRServices(TokenService tokenService)
+        public MeetingSignalRServices(ITokenService tokenService)
         {
             _tokenService = tokenService;
         }
@@ -35,6 +43,7 @@ namespace Online_Meeting.Client.Services
         //================CONNECTION================
         public async Task ConnectAsync()
         {
+            _isIntentionalDisconnect = false; // Reset cờ
             var token = _tokenService.GetAccessToken();
             if (String.IsNullOrEmpty(token)) throw new InvalidOperationException("Token is required");
 
@@ -42,6 +51,7 @@ namespace Online_Meeting.Client.Services
                 .WithUrl(AppConfig.MeetingBaseUrl, options =>
                 {
                     options.AccessTokenProvider = () => Task.FromResult(token);
+                    options.Headers.Add("ngrok-skip-browser-warning", "true");
                 })
                 .WithAutomaticReconnect()
                 .Build();
@@ -57,6 +67,15 @@ namespace Online_Meeting.Client.Services
             // Existing Participants
             _hubConnection.On<List<ParticipantInfo>>("ExistingParticipants", participants =>
             {
+
+                Console.WriteLine($"[SignalR] Received ExistingParticipants: {participants?.Count ?? 0} participants");
+                if (participants != null)
+                {
+                    foreach (var p in participants)
+                    {
+                        Console.WriteLine($"  - {p.Username} (UserId: {p.UserId}, ConnId: {p.ConnectionId}, mic: {p.micEnable}, cam: {p.camEnable})");
+                    }
+                }
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     OnExistingParticipant?.Invoke(new ExistingParticipantData { Participants = participants });
@@ -134,6 +153,15 @@ namespace Online_Meeting.Client.Services
                     OnScreenShareToggled?.Invoke(data);
                 });
             });
+            
+            //Chat message received
+            _hubConnection.On<ChatMessageData>("ReceiveChatMessage", data =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OnChatMessageReceived?.Invoke(data);
+                });
+            });
 
             // Error Handling
             _hubConnection.On<string>("Error", errorMessage =>
@@ -159,19 +187,55 @@ namespace Online_Meeting.Client.Services
 
             _hubConnection.Closed += async error =>
             {
-                Console.WriteLine("Connection to MeetingHub closed. Attempting to reconnect...");
+                if (_isIntentionalDisconnect)
+                {
+                    Console.WriteLine("Connection closed intentionally. No reconnect needed.");
+                    return;
+                }
+
+                Console.WriteLine("Connection closed unexpectedly. Attempting to reconnect...");
                 await Task.Delay(new Random().Next(0, 5) * 1000);
-                await _hubConnection.StartAsync();
+
+                try
+                {
+                    await _hubConnection.StartAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Reconnect failed: " + ex.Message);
+                }
             };
+
+            //Guest request
+            _hubConnection.On("YouAreWaiting", () =>
+            {
+                System.Diagnostics.Debug.WriteLine($"[debug] You are waiting");
+                Application.Current.Dispatcher.Invoke(() => OnYouAreWaiting?.Invoke());
+            });
+
+            _hubConnection.On<UserJoinData>("GuestRequested", (data) =>
+            {
+                Application.Current.Dispatcher.Invoke(() => OnGuestRequested?.Invoke(data));
+            });
+
+            _hubConnection.On("YouAreRejected", () =>
+            {
+                Application.Current.Dispatcher.Invoke(() => OnYouAreRejected?.Invoke());
+            });
+
+            _hubConnection.On<string>("MeetingEnded", (reason) =>
+            {
+                Application.Current.Dispatcher.Invoke(() => OnMeetingEnded?.Invoke(reason));
+            });
         }
 
 
         //================JOIN/LEAVE================
-        public async Task JoinRoomAsync(Guid roomId)
+        public async Task JoinRoomAsync(Guid roomId, bool camEnable, bool micEnable)
         {
             if (!Isconnected) throw new InvalidOperationException("Not connected to the hub.");
 
-            await _hubConnection.InvokeAsync("JoinRoom", roomId);
+            await _hubConnection.InvokeAsync("JoinRoom", roomId, micEnable, camEnable);
         }
 
         public async Task LeaveRoomAsync(Guid roomId)
@@ -219,11 +283,35 @@ namespace Online_Meeting.Client.Services
             await _hubConnection.InvokeAsync("ToggleScreenShare", isEnabled);
         }
 
+        //================CHAT======================
+        public async Task SendChatMessageAsync(string content)
+        {
+            if (!Isconnected) throw new InvalidOperationException("Not connected to the hub.");
+            await _hubConnection.InvokeAsync("SendChatMessage", content);
+        }
+
+        //============APPROVE PARTICIPANTS=========
+        public async Task AdmitUserAsync(string connectionId)
+        {
+            if (!Isconnected) throw new InvalidOperationException("Not connected to the hub.");
+            await _hubConnection.InvokeAsync("AdmitUser", connectionId);
+        }
+
+        public async Task RejectUserAsync(string connectionId)
+        {
+            if (!Isconnected) throw new InvalidOperationException("Not connected to the hub.");
+            await _hubConnection.InvokeAsync("RejectUser", connectionId);
+        }
+
+
         //================DISCONNECT================
         public async Task DisconnectAsync()
         {
             if (_hubConnection != null)
             {
+                // ⭐ Bật cờ báo hiệu
+                _isIntentionalDisconnect = true;
+
                 await _hubConnection.StopAsync();
                 await _hubConnection.DisposeAsync();
                 _hubConnection = null;

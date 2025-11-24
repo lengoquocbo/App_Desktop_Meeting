@@ -7,10 +7,12 @@ namespace Online_Meeting.Client.Services
     {
         private const string ACCESS_TOKEN_TARGET = "MyApp_AccessToken";
         private const string REFRESH_TOKEN_TARGET = "MyApp_RefreshToken";
+        private const string USER_ID_TARGET = "MyApp_UserId";
 
         private readonly object _lock = new object();
         private string _accessToken; // Cache in memory
         private string _username;
+        private Guid _userId;
 
         public TokenService()
         {
@@ -18,10 +20,11 @@ namespace Online_Meeting.Client.Services
         }
 
         /// Lưu cả Access Token và Refresh Token
-        public void SaveTokens(string username, string accessToken, string refreshToken)
+        public void SaveTokens(Guid userId, string username, string accessToken, string refreshToken)
         {
             lock (_lock)
             {
+                _userId = userId;
                 _username = username;
                 _accessToken = accessToken;
 
@@ -30,6 +33,7 @@ namespace Online_Meeting.Client.Services
 
                 // Lưu Refresh Token
                 SaveCredential(REFRESH_TOKEN_TARGET, username, refreshToken);
+                SaveCredential(USER_ID_TARGET, username, userId.ToString());
             }
         }
 
@@ -65,6 +69,14 @@ namespace Online_Meeting.Client.Services
             }
         }
 
+        public Guid GetUserId()
+        {
+            lock (_lock)
+            {
+                return _userId;
+            }
+        }
+
         /// Lấy username đã lưu
         public string GetUsername()
         {
@@ -87,9 +99,11 @@ namespace Online_Meeting.Client.Services
             {
                 _accessToken = null;
                 _username = null;
+                _userId = Guid.Empty;
 
                 DeleteCredential(ACCESS_TOKEN_TARGET);
                 DeleteCredential(REFRESH_TOKEN_TARGET);
+                DeleteCredential(USER_ID_TARGET);
             }
         }
 
@@ -107,6 +121,17 @@ namespace Online_Meeting.Client.Services
                     {
                         _username = cred.Username;
                     }
+                }
+
+                string userIdString = LoadCredential(USER_ID_TARGET);
+                if (!string.IsNullOrEmpty(userIdString) && Guid.TryParse(userIdString, out Guid parsedId))
+                {
+                    _userId = parsedId;
+                }
+                else
+                {
+                    // Trường hợp không tìm thấy hoặc lỗi, gán Empty để tránh null reference sau này
+                    _userId = Guid.Empty;
                 }
             }
             catch (Exception ex)
@@ -174,6 +199,9 @@ namespace Online_Meeting.Client.Services
                 System.Diagnostics.Debug.WriteLine($"Error deleting credential {target}: {ex.Message}");
             }
         }
+
+        
+
 
         #endregion
     }

@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Online_Meeting.Client.Dtos.AccountDto;
+using Online_Meeting.Client.Interfaces;
+using Online_Meeting.Share.Models;
+using SIPSorcery.OpenAIWebRTC;
+using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using Online_Meeting.Client.Interfaces;
-using Online_Meeting.Client.Dtos.AccountDto;
 
 
 namespace Online_Meeting.Client.Services
@@ -15,18 +17,23 @@ namespace Online_Meeting.Client.Services
         private readonly HttpClient _httpClient;
         private readonly ITokenService _token;
 
-
-
-
-
-        public AuthService(TokenService tokenService)
+        public AuthService(ITokenService tokenService, IHttpClientFactory httpClientFactory)
+            
         {
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri(AppConfig.ApiBaseUrl),
-                Timeout = TimeSpan.FromSeconds(AppConfig.ApiTimeout)
-            };
             _token = tokenService;
+            _httpClient = httpClientFactory.CreateClient("PublicClient");
+
+            if (_httpClient.DefaultRequestHeaders.Contains("ngrok-skip-browser-warning"))
+            {
+                System.Diagnostics.Debug.WriteLine("✅ PublicClient đã có header Ngrok");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("❌ LỖI: PublicClient CHƯA có header Ngrok -> Kiểm tra lại App.xaml.cs");
+
+                // [Giải pháp tạm thời] Nếu cấu hình DI lỗi, ta add thủ công ở đây để chạy được đã
+                _httpClient.DefaultRequestHeaders.Add("ngrok-skip-browser-warning", "true");
+            }
         }
 
         public async Task<AuthResponse> LoginAsync(LoginRequest request)
@@ -56,7 +63,8 @@ namespace Online_Meeting.Client.Services
                 if (!string.IsNullOrEmpty(data.Token))
 
                     {
-                        _token.SaveTokens(data.UserName,data.Token, "");
+                        _token.SaveTokens(data.userId, data.UserName,data.Token, "");
+
                         // TokenStorageService.SaveToken(data.Token);
                         Debug.WriteLine("Token đã được lưu vào bộ nhớ cục bộ.");
                     }

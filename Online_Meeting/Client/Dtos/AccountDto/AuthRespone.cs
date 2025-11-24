@@ -8,6 +8,7 @@ namespace Online_Meeting.Client.Dtos.AccountDto
 {
     public class AuthResponse
     {
+        public Guid userId { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Token { get; set; }

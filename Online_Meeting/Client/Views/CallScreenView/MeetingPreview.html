@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Meeting Preview</title>
+    <style>
+        :root {
+            --bg: #F3F6F9;
+            --card: #ffffff;
+            --muted: #6B7280;
+            --accent: #0A84FF;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: transparent;
+            font-size: 14px;
+            color: #0f1720;
+        }
+
+        /* Centered compact modal */
+        .modal-wrap {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            box-sizing: border-box;
+        }
+
+        .modal {
+            width: 720px;
+            max-width: 94vw;
+            max-height: 90vh;
+            background: var(--card);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(12, 15, 20, 0.12);
+            overflow: hidden;
+            border: 1px solid #E6ECEF;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .title {
+            font-weight: 600;
+            font-size: 15px;
+            color: #0f1720;
+        }
+
+        /* body: cho phép scroll khi nội dung vượt modal */
+        .modal-body {
+            padding: 18px;
+            display: flex;
+            gap: 16px;
+            align-items: stretch;
+            overflow: auto;
+            box-sizing: border-box;
+            min-height: 350px;
+        }
+
+        /* PREVIEW BOX: giữ tỉ lệ, inner elements absolute */
+        .preview-box {
+            flex: 1;
+            background: #0F1720;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            min-height: 180px;
+            max-height: 100vh;
+        }
+
+            /* video phủ đầy, nằm dưới overlay và placeholder */
+            .preview-box video.preview-video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                z-index: 1;
+                transform: scaleX(-1);
+                transition: transform 0.3s ease;
+            }
+
+            /* placeholder phủ đầy, nằm trên video */
+            .preview-box .placeholder {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                gap: 12px;
+                color: #fff;
+                background: linear-gradient(135deg, #1e3342 0%, #203845 100%);
+                z-index: 2;
+                box-sizing: border-box;
+                padding: 18px;
+            }
+
+                .preview-box .placeholder .avatar {
+                    width: 84px;
+                    height: 84px;
+                    border-radius: 50%;
+                    background: #34444E;
+                    flex: 0 0 auto;
+                }
+
+        /* compact control overlay like Zoom */
+        .overlay {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 14px;
+            display: flex;
+            gap: 12px;
+            z-index: 3;
+            pointer-events: none;
+            /* tránh parent chặn pointer, bật cho nút sau */
+        }
+
+            .overlay .icon-btn {
+                pointer-events: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 56px;
+                height: 56px;
+                border-radius: 28px;
+                background: rgba(255, 255, 255, 0.98);
+                border: 1px solid #E6ECEF;
+                cursor: pointer;
+                box-shadow: 0 2px 6px rgba(12, 15, 20, 0.04);
+                transform: none;
+            }
+
+                .overlay .icon-btn .lbl {
+                    margin-top: 6px;
+                    font-size: 11px;
+                    color: var(--muted);
+                    line-height: 1;
+                    white-space: nowrap;
+                }
+
+        /* Right controls (column) */
+        .controls {
+            width: 250px;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: calc(90vh - 160px);
+            overflow: auto;
+            padding-right: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            color: #4B5563;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input[type="text"],
+        select {
+            height: 36px;
+            border-radius: 6px;
+            border: 1px solid #E6ECEF;
+            padding: 6px 10px;
+            font-size: 13px;
+            outline: none;
+            background: #fff;
+            width: 100%;
+            box-sizing: border-box;
+            word-break: break-word;
+        }
+
+        .checkbox-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .muted {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .footer {
+            padding: 12px 18px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #F1F5F9;
+            background: transparent;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border-radius: 8px;
+            border: 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-secondary {
+            background: #F3F6F9;
+            color: #0f1720;
+            border: 1px solid #E6ECEF;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* responsive */
+        @media (max-width:760px) {
+            .modal {
+                width: 95vw;
+                max-height: 94vh;
+            }
+
+            .modal-body {
+                flex-direction: column;
+            }
+
+            .controls {
+                width: 100%;
+                max-height: none;
+                overflow: visible;
+            }
+
+            .preview-box {
+                min-height: 220px;
+                max-height: 45vh;
+            }
+        }
+
+        @media (max-width:420px) {
+            .overlay .icon-btn {
+                width: 48px;
+                height: 48px;
+                border-radius: 24px;
+            }
+
+            .preview-box .placeholder .avatar {
+                width: 64px;
+                height: 64px;
+            }
+
+            .overlay {
+                gap: 8px;
+                bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="modal-wrap">
+        <div class="modal" role="dialog" aria-label="Meeting Preview">
+            <div class="modal-header">
+                <div class="title">Meeting Preview</div>
+                <div class="small muted">Adjust devices before joining</div>
+            </div>
+
+            <div class="modal-body">
+                <div class="preview-box" id="previewBox">
+                    <video id="localVideo" class="preview-video" autoplay playsinline muted></video>
+
+                    <div class="placeholder" id="cameraPlaceholder" style="display:none;">
+                        <div class="avatar"></div>
+                        <div style="font-size:15px;">Camera Off</div>
+                    </div>
+
+                    <div class="overlay" id="controlsOverlay" aria-hidden="false">
+                        <button id="audioToggle" class="icon-btn" title="Mute / Unmute">
+                            <!-- mic -->
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 14C13.6569 14 15 12.6569 15 11V5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5V11C9 12.6569 10.3431 14 12 14Z"
+                                      stroke="#111827" stroke-width="1.3" stroke-linecap="round"
+                                      stroke-linejoin="round" />
+                                <path d="M19 11C19 14.3137 16.3137 17 13 17H11C7.68629 17 5 14.3137 5 11"
+                                      stroke="#111827" stroke-width="1.3" stroke-linecap="round"
+                                      stroke-linejoin="round" />
+                                <path d="M12 17V22" stroke="#111827" stroke-width="1.3" stroke-linecap="round"
+                                      stroke-linejoin="round" />
+                            </svg>
+                            <div class="lbl">Audio</div>
+                        </button>
+
+                        <button id="videoToggle" class="icon-btn" title="Start / Stop Video">
+                            <!-- camera -->
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M23 7L17 11H15V7C15 5.89543 14.1046 5 13 5H6C4.89543 5 4 5.89543 4 7V17C4 18.1046 4.89543 19 6 19H13C14.1046 19 15 18.1046 15 17V13H17L23 17V7Z"
+                                      stroke="#111827" stroke-width="1.3" stroke-linecap="round"
+                                      stroke-linejoin="round" />
+                            </svg>
+                            <div class="lbl">Video</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="controls" aria-label="Preview controls">
+                    <div>
+                        <label for="micSelect">Microphone</label>
+                        <select id="micSelect">
+                            <option>Default microphone</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="camSelect">Camera</label>
+                        <select id="camSelect">
+                            <option>Default camera</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-row">
+                        <input id="alwaysPreview" type="checkbox" checked />
+                        <label for="alwaysPreview" class="muted">Always show this preview when joining</label>
+                    </div>
+
+                    <div class="muted" style="margin-top:6px;">
+                        Tip: Toggle camera/audio using the buttons on the
+                        preview.
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <button id="closeBtn" class="btn btn-secondary">Cancel</button>
+                <button id="startMeeting" class="btn btn-primary">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Safe postMessage to host (WebView2)
+        function postToHost(obj) {
+            try {
+                if (window.chrome && chrome.webview && chrome.webview.postMessage) chrome.webview.postMessage(obj);
+                else if (window.parent) window.parent.postMessage(obj, "*");
+            } catch (e) { }
+        }
+
+        // Elements
+        const videoEl = document.getElementById('localVideo');
+        const camPlaceholder = document.getElementById('cameraPlaceholder');
+        const camSelect = document.getElementById('camSelect');
+        const micSelect = document.getElementById('micSelect');
+        const audioToggle = document.getElementById('audioToggle');
+        const videoToggle = document.getElementById('videoToggle');
+        const startBtn = document.getElementById('startMeeting');
+        const closeBtn = document.getElementById('closeBtn');
+        const alwaysPreview = document.getElementById('alwaysPreview');
+
+        // State
+        let localStream = null;
+        let audioEnabled = true;
+        let videoEnabled = true;
+
+        // Populate select helper
+        function populateSelect(selectEl, items, emptyText) {
+            const prev = selectEl.value;
+            selectEl.innerHTML = '';
+            if (!items || items.length === 0) {
+                selectEl.appendChild(new Option(emptyText || 'No device', ''));
+                return;
+            }
+            items.forEach(it => {
+                const label = it.label || (it.kind === 'videoinput' ? 'Camera' : 'Microphone');
+                selectEl.appendChild(new Option(label, it.deviceId));
+            });
+            if (prev && Array.from(selectEl.options).some(o => o.value === prev)) selectEl.value = prev;
+        }
+
+        function normalizeControls() {
+            // đảm bảo overlay nằm ở đúng vị trí và nút giữ kích thước
+            const overlay = document.getElementById('controlsOverlay') || document.querySelector('.overlay');
+            if (!overlay) return;
+            overlay.style.transform = 'translateX(-50%)'; // reset
+            overlay.style.bottom = '14px';
+            // reset style của nút nếu ai đó override
+            overlay.querySelectorAll('.icon-btn').forEach(btn => {
+                btn.style.width = btn.style.width || '56px';
+                btn.style.height = btn.style.height || '56px';
+                btn.style.transform = 'none';
+            });
+        }
+
+        function showPlaceholder(show) {
+            if (show) {
+                camPlaceholder.style.display = 'flex';
+                videoEl.style.display = 'none';
+            } else {
+                camPlaceholder.style.display = 'none';
+                videoEl.style.display = 'block';
+            }
+            // reset controls after layout change
+            requestAnimationFrame(() => normalizeControls());
+        }
+
+        // Enumerate devices
+        async function listDevices() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const cams = devices.filter(d => d.kind === 'videoinput');
+                const mics = devices.filter(d => d.kind === 'audioinput');
+                populateSelect(camSelect, cams, 'No camera found');
+                populateSelect(micSelect, mics, 'No microphone found');
+                postToHost({ type: 'devices', devices: devices.map(d => ({ deviceId: d.deviceId, kind: d.kind, label: d.label })) });
+            } catch (e) {
+                console.error('enumerateDevices', e);
+                postToHost({ type: 'error', msg: e.message || String(e) });
+            }
+        }
+
+        // Request permission and use stream (do not stop it immediately)
+        async function requestPermissionAndUse() {
+            try {
+                if (localStream) {
+                    await listDevices();
+                    return localStream;
+                }
+                // Ask for audio+video; on first run this will prompt permission
+                const s = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+                localStream = s;
+                videoEl.srcObject = localStream;
+                videoEl.onloadedmetadata = () => { videoEl.play().catch(() => { }); camPlaceholder.style.display = (localStream.getVideoTracks().length && localStream.getVideoTracks()[0].enabled) ? 'none' : ''; };
+                // attach ended/mute/unmute listeners
+                localStream.getVideoTracks().forEach(track => {
+                    track.addEventListener('ended', () => { postToHost({ type: 'video-track-ended' }); camPlaceholder.style.display = ''; });
+                    track.addEventListener('mute', () => console.log('video mute'));
+                    track.addEventListener('unmute', () => console.log('video unmute'));
+                });
+                await listDevices();
+                postToHost({ type: 'permission-granted' });
+                return localStream;
+            } catch (err) {
+                console.error('permission error', err);
+                postToHost({ type: 'permission-denied', msg: err.message || String(err) });
+                camPlaceholder.style.display = '';
+                return null;
+            }
+        }
+
+        // Start preview: use existing stream or request
+        async function startPreview() {
+            try {
+                if (!localStream) {
+                    await requestPermissionAndUse();
+                    if (!localStream) return;
+                }
+                // ensure tracks enabled
+                localStream.getAudioTracks().forEach(t => t.enabled = audioEnabled);
+                localStream.getVideoTracks().forEach(t => t.enabled = videoEnabled);
+                videoEl.srcObject = localStream;
+                camPlaceholder.style.display = localStream.getVideoTracks().length ? 'none' : '';
+                postToHost({ type: 'preview-started' });
+            } catch (e) { console.error('startPreview', e); }
+        }
+
+        function stopPreview() {
+            if (localStream) {
+                localStream.getTracks().forEach(t => { try { t.stop(); } catch { } });
+                localStream = null;
+            }
+            videoEl.srcObject = null;
+            camPlaceholder.style.display = '';
+            postToHost({ type: 'preview-stopped' });
+        }
+
+        // update audio/video toggles
+        function updateAudioVideo(audioOn, videoOn) {
+            audioEnabled = audioOn;
+            videoEnabled = videoOn;
+            audioToggle.style.opacity = audioOn ? '1' : '0.5';
+            videoToggle.style.opacity = videoOn ? '1' : '0.5';
+            if (localStream) {
+                localStream.getAudioTracks().forEach(t => t.enabled = audioOn);
+                localStream.getVideoTracks().forEach(t => t.enabled = videoOn);
+            }
+
+            showPlaceholder(!videoOn); // nếu videoOn=false -> show placeholder
+
+            postToHost({ type: 'av-toggled', audio: audioOn, video: videoOn });
+        }
+
+        audioToggle.addEventListener('click', () => updateAudioVideo(!audioEnabled, videoEnabled));
+        videoToggle.addEventListener('click', () => updateAudioVideo(audioEnabled, !videoEnabled));
+
+        // pick device change handlers
+        camSelect.addEventListener('change', async () => {
+            if (!camSelect.value) return;
+            // request stream for selected camera (keep audio selection)
+            const audioId = micSelect.value || undefined;
+            const constraints = { video: { deviceId: { exact: camSelect.value } }, audio: audioId ? { deviceId: { exact: audioId } } : true };
+            try {
+                const s = await navigator.mediaDevices.getUserMedia(constraints);
+                // stop old video tracks only
+                if (localStream) {
+                    localStream.getVideoTracks().forEach(t => t.stop());
+                    // keep old audio tracks if present
+                    const oldAudio = localStream.getAudioTracks();
+                    localStream = new MediaStream([...s.getVideoTracks(), ...oldAudio]);
+                } else {
+                    localStream = s;
+                }
+                videoEl.srcObject = localStream;
+                await listDevices();
+            } catch (e) { console.error('change camera err', e); postToHost({ type: 'error', msg: e.message }); }
+        });
+
+        micSelect.addEventListener('change', async () => {
+            if (!micSelect.value) return;
+            const videoId = camSelect.value || undefined;
+            const constraints = { audio: { deviceId: { exact: micSelect.value } }, video: videoId ? { deviceId: { exact: videoId } } : true };
+            try {
+                const s = await navigator.mediaDevices.getUserMedia(constraints);
+                if (localStream) {
+                    localStream.getAudioTracks().forEach(t => t.stop());
+                    const oldVideo = localStream.getVideoTracks();
+                    localStream = new MediaStream([...oldVideo, ...s.getAudioTracks()]);
+                } else {
+                    localStream = s;
+                }
+                videoEl.srcObject = localStream;
+                await listDevices();
+            } catch (e) { console.error('change mic err', e); postToHost({ type: 'error', msg: e.message }); }
+        });
+
+        // Start meeting -> send settings to host
+        startBtn.addEventListener('click', () => {
+            postToHost({
+                type: 'start-meeting',
+                cameraId: camSelect.value || '',
+                micId: micSelect.value || '',
+                alwaysPreview: !!alwaysPreview.checked,
+                audio: audioEnabled,
+                video: videoEnabled,
+            });
+        });
+
+        closeBtn.addEventListener('click', () => {
+            postToHost({ type: 'preview-cancel' });
+        });
+
+        // device change listener
+        navigator.mediaDevices.addEventListener('devicechange', async () => {
+            await listDevices();
+        });
+
+        // initial: try to request permission and start preview (will prompt)
+        (async () => {
+            camPlaceholder.style.display = '';
+            await requestPermissionAndUse();
+            // auto-start preview if permission granted
+            if (localStream) startPreview();
+        })();
+
+        // Expose previewHost for host script to call actions if needed
+        window.previewHost = {
+            startPreview, stopPreview, listDevices,
+            getState: () => ({
+                cameraId: camSelect.value,
+                micId: micSelect.value,
+                audioEnabled, videoEnabled
+            })
+        };
+
+        // listen messages from parent (optional)
+        window.addEventListener('message', (ev) => {
+            try {
+                const m = ev.data;
+                if (!m || typeof m !== 'object') return;
+                if (m.type === 'start-preview') startPreview();
+                if (m.type === 'stop-preview') stopPreview();
+                if (m.type === 'list-devices') listDevices();
+            } catch (e) { }
+        });
+    </script>
+</body>
+</html>

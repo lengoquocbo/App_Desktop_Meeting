@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Dtos
 {
-    internal class JoinRoomResult
+    public class JoinRoomResult
     {
         public Guid RoomId { get; set; }
         public string RoomName { get; set; }
+        public string RoomKey { get; set; }
+        public string RoomUrl { get; set; }
         public string Role { get; set; }
+        public bool IsWaiting { get; set; }
         public List<ParticipantInfo> Participants { get; set; }
 
     }

@@ -10,16 +10,16 @@ namespace Online_Meeting.Client.Interfaces
     public interface IFileUploadService
     {
         [Multipart]
-        [Post("/files/upload")]
+        [Post("/api/files/upload")]
         Task<ApiResponse<UploadResponse>> UploadFileAsync(
             [AliasAs("file")] StreamPart file,
             [AliasAs("fileType")] string fileType
         );
 
-        [Get("/files/{fileUrl}")]
+        [Get("/api/files/{fileUrl}")]
         Task<HttpResponseMessage> DownloadFileAsync(string fileUrl);
 
-        [Delete("/files/{fileUrl}")]
+        [Delete("/api/files/{fileUrl}")]
         Task<ApiResponse<object>> DeleteFileAsync(string fileUrl);
     }
 

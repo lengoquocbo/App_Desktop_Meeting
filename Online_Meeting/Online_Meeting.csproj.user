@@ -1,45 +1,11 @@
-<<<<<<< HEAD
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
     <Compile Update="Client\Views\Dialogs\CreateGroupDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Client\Views\Pages\ForgotPasswordView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\Pages\GroupChatView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\Pages\HomeView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\Pages\LoginView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\Pages\MeetingRoomView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\Pages\ProfileView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\Pages\RegisterView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\Pages\SettingsView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Client\Views\UserControls\SidebarUserControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-=======
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup />
-  <ItemGroup>
-    <Compile Update="Client\Views\CallScreen.xaml.cs">
+    <Compile Update="Client\Views\Dialogs\JoinGroupDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Client\Views\Pages\ForgotPasswordView.xaml.cs">
@@ -70,5 +36,4 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
->>>>>>> 1227cb3268021c0ecd36b21842eee7394ce15584
 </Project>

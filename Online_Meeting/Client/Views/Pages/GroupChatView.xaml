@@ -136,31 +136,44 @@
                                       Margin="0,4,0,0"/>
                         </StackPanel>
                         <Button HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                ToolTip="Create New Group"
-                                Background="{StaticResource PrimaryBrush}"
-                                Foreground="White"
-                                BorderThickness="0"
-                                Width="44"
-                                Height="44"
-                                Cursor="Hand"
-                                Click="CreateGroupButton_Click">
+        VerticalAlignment="Top"
+        ToolTip="Create New Group"
+        Background="{StaticResource PrimaryBrush}"
+        Foreground="White"
+        BorderThickness="0"
+        Width="44"
+        Height="44"
+        Cursor="Hand"
+        Click="PlusButton_Click">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="{TemplateBinding Background}"
-                                            CornerRadius="22"
-                                            Width="44"
-                                            Height="44">
+                    CornerRadius="22"
+                    Width="44"
+                    Height="44">
                                         <TextBlock Text="+" 
-                                                  FontSize="24" 
-                                                  FontWeight="Bold"
-                                                  Foreground="White"
-                                                  HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center"/>
+                           FontSize="24" 
+                           FontWeight="Bold"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
                                     </Border>
                                 </ControlTemplate>
                             </Button.Template>
+
+                            <!-- MENU popup -->
+                            <Button.ContextMenu>
+                                <ContextMenu x:Name="PlusMenu"
+                     Placement="Bottom"
+                     StaysOpen="False">
+                                    <MenuItem Header="➕  Create Group"
+                      Click="CreateGroupMenu_Click"/>
+                                    <MenuItem Header="🔗  Join Group"
+                      Click="JoinGroupMenu_Click"/>
+                                </ContextMenu>
+                            </Button.ContextMenu>
                         </Button>
+
                     </Grid>
                 </Border>
 
@@ -465,8 +478,8 @@
                                 Margin="0,0,0,20">
                             <TextBlock Text="💬" 
                                        FontSize="60"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center" Margin="0,0,19,0"/>
                         </Border>
                         <TextBlock Text="Select a conversation" 
                                   FontSize="22"
@@ -541,16 +554,16 @@
                             <!-- Actions -->
                             <StackPanel Grid.Column="2" 
                                    Orientation="Horizontal">
-                                <Button Style="{StaticResource IconButton}"
+                                <!--   <Button Style="{StaticResource IconButton}"
                                    ToolTip="Voice Call"
                                    Content="📞"/>
                                 <Button Style="{StaticResource IconButton}"
                                    ToolTip="Video Call"
-                                   Content="📹"/>
+                                   Content="📹"/> -->
                                 <Button Style="{StaticResource IconButton}"
                                    ToolTip="Group Info"
                                    Content="ℹ️"/>
-                                   <!--Click="GroupInfoButton_Click"-->
+                                <!--Click="GroupInfoButton_Click"-->
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -558,7 +571,7 @@
                     <!-- Messages Area -->
                     <Border Grid.Row="1" Background="#FAFBFC">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="24">
+                            <StackPanel x:Name="ChatMessagesPanel" Margin="24">
                                 <TextBlock Text="Start a conversation with your team!"
                                       FontSize="14"
                                       Foreground="{StaticResource TextSecondaryBrush}"
@@ -581,9 +594,11 @@
                             </Grid.ColumnDefinitions>
 
                             <Button Grid.Column="0"
-                               Style="{StaticResource IconButton}"
-                               ToolTip="Attach File"
-                               Content="📎"/>
+                                    x:Name="sendFile"
+                                    Style="{StaticResource IconButton}"
+                                    ToolTip="Attach File"
+                                    Content="📎"
+                                    Click="click_sendfile"/>
 
                             <Border Grid.Column="1"
                                Background="#F5F7FA"
@@ -603,12 +618,15 @@
                                    ToolTip="Emoji"
                                    Content="😊"/>
                                 <Button Background="{StaticResource PrimaryBrush}"
+                                   x:Name="SendMessageButton"
                                    Foreground="White"
                                    BorderThickness="0"
                                    Width="44"
                                    Height="44"
                                    Cursor="Hand"
-                                   ToolTip="Send">
+                                   ToolTip="Send"
+                                   Click="SendMessageButton_Click">
+                                   
                                     <!--  CHO NÀY BO ƠI  Click="SendMessageButton_Click" -->
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
@@ -616,7 +634,7 @@
                                                 CornerRadius="22"
                                                 Width="44"
                                                 Height="44">
-                                                <TextBlock Text="📤"
+                                                <TextBlock Text="Send"
                                                       FontSize="20"
                                                       HorizontalAlignment="Center"
                                                       VerticalAlignment="Center"/>

@@ -33,6 +33,16 @@ namespace Online_Meeting.Client.Interfaces
         Task<ApiResponse<List<ChatGroup>>> GetMyGroupsAsync();
 
         /// <summary>
+        /// Join group chat
+        /// </summary>
+
+        /// <summary>
+        /// Join group chat - chỉ cần groupId
+        /// </summary>
+        [Post("/groupchat/{groupId}/join")]
+        [Headers("Content-Type: application/json")]
+        Task<ApiResponse<object>> JoinGroupAsync(Guid groupId);
+        /// <summary>
         /// Lấy danh sách groups
         /// </summary>
         //[Get("/api/groups")]

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -19,44 +20,70 @@ namespace Online_Meeting.Client.Services
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            // DEBUG: Log request
-            Debug.WriteLine($"=== HTTP REQUEST ===");
-            Debug.WriteLine($"URL: {request.RequestUri}");
-            Debug.WriteLine($"Method: {request.Method}");
+            // =================================================================
+            // 1. LOG REQUEST (Gửi đi)
+            // =================================================================
+            Debug.WriteLine($"\n┏━━━━━━━━━━━━━━ HTTP REQUEST ━━━━━━━━━━━━━━");
+            Debug.WriteLine($"┃ URL: {request.RequestUri}");
+            Debug.WriteLine($"┃ Method: {request.Method}");
 
             // Lấy token từ storage
             var token = _tokenService.GetAccessToken();
 
-            // DEBUG: Log token
-            Debug.WriteLine($"Token exists: {!string.IsNullOrEmpty(token)}");
-            if (!string.IsNullOrEmpty(token))
-            {
-                Debug.WriteLine($"Token preview: {token.Substring(0, Math.Min(30, token.Length))}...");
-            }
-
-            // Nếu có token, gắn vào header
             if (!string.IsNullOrEmpty(token))
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                Debug.WriteLine($"Authorization header set: Bearer {token.Substring(0, 10)}...");
+                Debug.WriteLine($"┃ Token: {token.Substring(0, Math.Min(20, token.Length))}...");
             }
             else
             {
-                Debug.WriteLine("WARNING: No token found!");
+                Debug.WriteLine("┃ WARNING: No token found!");
             }
 
-            // Gửi request
-            var response = await base.SendAsync(request, cancellationToken);
-
-            // DEBUG: Log response
-            Debug.WriteLine($"Response Status: {response.StatusCode}");
-            Debug.WriteLine($"===================");
-
-            // Nếu response là 401 (Unauthorized)
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            // [QUAN TRỌNG] Log nội dung JSON gửi đi (để kiểm tra DTO)
+            if (request.Content != null)
             {
-                Debug.WriteLine("⚠️ UNAUTHORIZED - Token may be invalid or expired");
-                // TODO: Implement refresh token logic
+                var requestBody = await request.Content.ReadAsStringAsync();
+                Debug.WriteLine($"┃ Body: {requestBody}");
+            }
+            Debug.WriteLine($"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+            // =================================================================
+            // 2. GỬI VÀ CHỜ KẾT QUẢ
+            // =================================================================
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await base.SendAsync(request, cancellationToken);
+
+                // =================================================================
+                // 3. LOG RESPONSE (Trả về)
+                // =================================================================
+                Debug.WriteLine($"\n┏━━━━━━━━━━━━━━ HTTP RESPONSE ━━━━━━━━━━━━━");
+                Debug.WriteLine($"┃ URL: {request.RequestUri}"); // Nhắc lại URL để dễ nhìn
+                Debug.WriteLine($"┃ Status: {(int)response.StatusCode} {response.StatusCode}");
+
+                // [QUAN TRỌNG] Đọc nội dung Server trả về (kể cả lỗi)
+                if (response.Content != null)
+                {
+                    // Load vào buffer để đọc không làm hỏng stream của Refit
+                    await response.Content.LoadIntoBufferAsync();
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"┃ Body: {responseBody}");
+                }
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"┃ ⚠️ ERROR REQUEST DETECTED");
+                }
+                Debug.WriteLine($"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"\n┏━━━━━━━━━━━━━━ HTTP EXCEPTION ━━━━━━━━━━━━");
+                Debug.WriteLine($"┃ Error: {ex.Message}");
+                Debug.WriteLine($"┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+                throw;
             }
 
             return response;

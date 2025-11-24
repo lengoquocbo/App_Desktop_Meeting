@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Client\Views\CallScreenView\style.css" />
+    <Content Include="Client\Views\CallScreenView\style.css" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,6 +7,11 @@
             public string GroupName { get; set; }
         }
 
+        public class JoinGroupRequest
+        {
+            public string GroupId { get; set; }
+        }
+
         public class CreateGroupResponse
         {
             public string GroupId { get; set; }

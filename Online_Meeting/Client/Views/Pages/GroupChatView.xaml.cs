@@ -2,11 +2,20 @@
 using Online_Meeting.Client.Interfaces;
 using Online_Meeting.Client.Models;
 using Online_Meeting.Client.Services;
+using Online_Meeting.Client.ViewModels;
 using Online_Meeting.Client.Views.Dialogs;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Online_Meeting.Client.Views.Pages
 {
@@ -14,17 +23,97 @@ namespace Online_Meeting.Client.Views.Pages
     {
         private readonly ITokenService _token;
         private readonly IGroupService _groupService;
+        private readonly ChatViewModel _chatViewModel;
 
-        public GroupChatView(TokenService tokenService, IGroupService groupService)
+        public GroupChatView(TokenService tokenService, IGroupService groupService, ChatViewModel chatViewModel)
         {
             InitializeComponent();
             _token = tokenService;
             _groupService = groupService;
+            _chatViewModel = chatViewModel;
 
-            // gọi khi Page Loaded
-            Loaded += async (s, e) => await LoadGroupsAsync();
+            // ✅ Subscribe event từ ViewModel
+            _chatViewModel.Messages.CollectionChanged += Messages_CollectionChanged;
+
+            // ✅ Load khi Page Loaded
+            Loaded += async (s, e) =>
+            {
+                await LoadGroupsAsync();
+                await InitializeSignalRAsync();
+            };
         }
 
+        private async Task InitializeSignalRAsync()
+        {
+            try
+            {
+                var username = _token.GetUsername();
+                if (string.IsNullOrEmpty(username))
+                {
+                    System.Diagnostics.Debug.WriteLine("[GroupChatView] ❌ Username not found");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"[GroupChatView] 🚀 Connecting SignalR for user: {username}");
+
+                await _chatViewModel.InitializeAsync(Guid.Empty, username);
+
+                System.Diagnostics.Debug.WriteLine($"[GroupChatView] ✅ SignalR connected!");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[GroupChatView] ❌ SignalR failed: {ex.Message}");
+                MessageBox.Show($"Lỗi kết nối: {ex.Message}");
+            }
+        }
+
+        // ==========================================================
+        // ✅ XỬ LÝ HIỂN THỊ TIN NHẮN - RENDER LẠI TOÀN BỘ
+        // ==========================================================
+        // ==========================================================
+        // ✅ XỬ LÝ HIỂN THỊ TIN NHẮN - LUÔN RENDER LẠI TOÀN BỘ
+        // ==========================================================
+        private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"[UI] Messages_CollectionChanged: {e.Action}");
+
+            // ✅ Đơn giản: Luôn render lại toàn bộ
+            RenderAllMessages();
+        }
+
+        // ✅ Render toàn bộ messages từ ViewModel
+        private void RenderAllMessages()
+        {
+            ChatMessagesPanel.Children.Clear();
+
+            System.Diagnostics.Debug.WriteLine($"[UI] Rendering {_chatViewModel.Messages.Count} messages");
+
+            foreach (var msg in _chatViewModel.Messages)
+            {
+                System.Diagnostics.Debug.WriteLine($"[UI] Render: {msg.Content} | IsMyMessage: {msg.IsMyMessage}");
+                var bubble = CreateMessageBubble(msg);
+                ChatMessagesPanel.Children.Add(bubble);
+            }
+
+            ScrollToBottom();
+        }
+
+        //// Helper method để check message đã tồn tại
+        //private bool IsMessageAlreadyRendered(ChatMessage msg)
+        //{
+        //    // Đếm số bubble hiện tại
+        //    int currentBubbleCount = ChatMessagesPanel.Children.Count;
+        //    int messageCount = _chatViewModel.Messages.Count;
+
+        //    // Nếu số bubble >= số message → Có thể đã render rồi
+        //    return currentBubbleCount >= messageCount;
+        //}
+        // ✅ HÀM MỚI: Render toàn bộ messages từ ViewModel
+       
+
+        // ==========================================================
+        // LOAD GROUPS
+        // ==========================================================
         public async Task LoadGroupsAsync()
         {
             try
@@ -51,24 +140,23 @@ namespace Online_Meeting.Client.Views.Pages
                 MessageBox.Show($"Lỗi khi tải nhóm: {ex.Message}");
             }
         }
+
         private Button CreateGroupButton(ChatGroup group)
         {
-            // Button
             var button = new Button
             {
                 Style = (Style)FindResource("GroupItemButton"),
-                Tag = group.GroupKey,
+                Tag = group.Id,
                 Margin = new Thickness(0, 0, 0, 8)
             };
             button.Click += GroupItem_Click;
 
-            // Grid layout
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            // Avatar (2 ký tự đầu từ GroupName)
+            // Avatar
             var border = new Border
             {
                 Width = 56,
@@ -108,7 +196,7 @@ namespace Online_Meeting.Client.Views.Pages
             });
             grid.Children.Add(infoPanel);
 
-            // Time (tạm thời để trống hoặc có thể hiển thị Id ngắn)
+            // Time
             var timeText = new TextBlock
             {
                 Text = group.Id.ToString().Substring(0, 8),
@@ -132,15 +220,44 @@ namespace Online_Meeting.Client.Views.Pages
             return (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
         }
 
-        private void GroupItem_Click(object sender, RoutedEventArgs e)
+        // ==========================================================
+        //  CLICK VÀO GROUP - CHỈ GỌI VIEWMODEL
+        // ==========================================================
+        private async void GroupItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is string groupKey)
+            if (sender is Button button && button.Tag is Guid groupId)
             {
-                MessageBox.Show($"Bạn đã chọn nhóm có GroupKey = {groupKey}");
+                System.Diagnostics.Debug.WriteLine($"[UI] Group clicked: {groupId}");
+
+                // ✅ CHỈ GỌI VIEWMODEL - KHÔNG GỌI LoadMessagesAsync() NỮA!
+                await _chatViewModel.LoadGroupAsync(groupId);
+
+                // Update header UI
+                var groupNameTextBlock = ((button.Content as Grid)?.Children[1] as StackPanel)?.Children[0] as TextBlock;
+                if (groupNameTextBlock != null)
+                    ChatHeaderTitle.Text = groupNameTextBlock.Text;
+
+                EmptyChatState.Visibility = Visibility.Collapsed;
+                ChatContainer.Visibility = Visibility.Visible;
+
+                System.Diagnostics.Debug.WriteLine($"[UI] Group loaded. Messages count: {_chatViewModel.Messages.Count}");
             }
         }
 
-        private void CreateGroupButton_Click(object sender, RoutedEventArgs e)
+        // ==========================================================
+        // CONTEXT MENU
+        // ==========================================================
+        private void PlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.ContextMenu != null)
+            {
+                btn.ContextMenu.PlacementTarget = btn;
+                btn.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+                btn.ContextMenu.IsOpen = true;
+            }
+        }
+
+        private void CreateGroupMenu_Click(object sender, RoutedEventArgs e)
         {
             var token = _token.GetAccessToken();
             if (string.IsNullOrEmpty(token))
@@ -149,24 +266,533 @@ namespace Online_Meeting.Client.Views.Pages
                 return;
             }
 
-            // Lấy dialog từ DI container
             var dialog = App.Services.GetService<CreateGroupDialog>();
-
             if (dialog == null)
             {
                 MessageBox.Show("Dialog service not registered in DI container.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Gán callback reload danh sách nhóm sau khi tạo thành công
             dialog.OnGroupCreated = async () => await LoadGroupsAsync();
-
-            // Gán owner để dialog hiển thị trung tâm cửa sổ chính
             dialog.Owner = Window.GetWindow(this);
-
-            // Hiển thị dialog
             dialog.ShowDialog();
         }
 
+        private void JoinGroupMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var token = _token.GetAccessToken();
+            if (string.IsNullOrEmpty(token))
+            {
+                MessageBox.Show("Please login first!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var dialog = App.Services.GetService<JoinGroupDialog>();
+            if (dialog == null)
+            {
+                MessageBox.Show("Dialog service not registered in DI container.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            dialog.OnGroupJoined = async () => await LoadGroupsAsync();
+            dialog.Owner = Window.GetWindow(this);
+            dialog.ShowDialog();
+        }
+
+        // ==========================================================
+        // GỬI TIN NHẮN
+        // ==========================================================
+        private async void SendMessageButton_Click(object sender, RoutedEventArgs e)
+        {
+            await SendMessageAsync(sender);
+        }
+
+        private async void MessageInputBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift))
+                {
+                    e.Handled = true;
+                    await SendMessageAsync(SendMessageButton);
+                }
+            }
+            else
+            {
+                await _chatViewModel.SendTypingAsync();
+            }
+        }
+
+        private async Task SendMessageAsync(object sender)
+        {
+            var message = MessageInputBox.Text.Trim();
+
+            if (string.IsNullOrEmpty(message))
+            {
+                MessageInputBox.Focus();
+                return;
+            }
+
+            if (_chatViewModel.CurrentGroupId == Guid.Empty)
+            {
+                MessageBox.Show("Vui lòng chọn nhóm để chat!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var btn = sender as Button;
+
+            try
+            {
+                if (btn != null) btn.IsEnabled = false;
+
+                MessageInputBox.Clear();
+                MessageInputBox.Focus();
+
+
+                // 🔥 Nếu nội dung là file → gửi file
+                if (IsValidFile(message))
+                {
+                    await _chatViewModel.SendFileAsync(message);
+                }
+                else
+                {
+                    // 🔥 Không phải file → gửi text
+                    await _chatViewModel.SendTextAsync(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageInputBox.Text = message;
+                MessageInputBox.CaretIndex = message.Length;
+                MessageBox.Show($"Gửi thất bại: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (btn != null) btn.IsEnabled = true;
+            }
+        }
+        private bool IsValidFile(string path)
+        {
+            if (!File.Exists(path)) return false;
+
+            string ext = Path.GetExtension(path).ToLower();
+            return _allowedExtensions.Contains(ext);
+        }
+
+        private static readonly string[] _allowedExtensions =
+        {
+             ".jpg", ".jpeg", ".png", ".gif",".mp4",".pdf",".docx"
+        };
+
+
+        // ==========================================================
+        // UI HELPERS
+        // ==========================================================
+        private void ScrollToBottom()
+        {
+            var scrollViewer = FindVisualChild<ScrollViewer>(ChatMessagesPanel.Parent as DependencyObject);
+            if (scrollViewer != null)
+            {
+                scrollViewer.ScrollToEnd();
+            }
+        }
+
+        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null) return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T result)
+                    return result;
+
+                var childOfChild = FindVisualChild<T>(child);
+                if (childOfChild != null)
+                    return childOfChild;
+            }
+            return null;
+        }
+
+        private UIElement CreateMessageBubble(ChatMessage msg)
+        {
+            Debug.WriteLine($"[UI] ========== CREATE BUBBLE ==========");
+            Debug.WriteLine($"[UI] TypeMessage: '{msg.TypeMessage}'");
+            Debug.WriteLine($"[UI] FileUrl: '{msg.FileUrl}'");
+            Debug.WriteLine($"[UI] FileName: '{msg.FileName}'");
+            Debug.WriteLine($"[UI] Content: '{msg.Content}'");
+
+            var myBubbleColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0084FF"));
+            var otherBubbleColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F0F0F0"));
+            var myTextColor = Brushes.White;
+            var otherTextColor = Brushes.Black;
+
+            var container = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left,
+                Margin = new Thickness(0, 4, 0, 4)
+            };
+
+            // Hiện tên người gửi
+            if (!msg.IsMyMessage)
+            {
+                var nameBlock = new TextBlock
+                {
+                    Text = msg.UserName,
+                    FontSize = 11,
+                    Foreground = Brushes.Gray,
+                    Margin = new Thickness(10, 0, 0, 2)
+                };
+                container.Children.Add(nameBlock);
+            }
+
+            //  KIỂM TRA IMAGE
+            if (msg.TypeMessage == "IMAGE")
+            {
+                Debug.WriteLine($"[UI] This is an IMAGE message");
+
+                //  CÓ FileUrl → Hiển thị ảnh
+                if (!string.IsNullOrEmpty(msg.FileUrl))
+                {
+                    Debug.WriteLine($"[UI] ✅ Has FileUrl, creating image");
+
+                    var imageBorder = new Border
+                    {
+                        CornerRadius = new CornerRadius(12),
+                        MaxWidth = 300,
+                        MaxHeight = 300,
+                        Background = Brushes.Transparent,
+                        Margin = new Thickness(5, 2, 5, 2),
+                        Cursor = Cursors.Hand,
+                        HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
+                    };
+
+                    var image = new Image
+                    {
+                        Stretch = Stretch.Uniform,
+                        MaxWidth = 300,
+                        MaxHeight = 300
+                    };
+
+                    try
+                    {
+                        var bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.UriSource = new Uri(msg.FileUrl, UriKind.Absolute);
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.DecodePixelWidth = 300;
+                        bitmap.EndInit();
+                        image.Source = bitmap;
+
+                        Debug.WriteLine($"[UI]  Image loaded successfully");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[UI]  Failed to load image: {ex.Message}");
+
+                        var errorText = new TextBlock
+                        {
+                            Text = $"❌ Cannot load image\n{msg.FileName ?? msg.Content}",
+                            Foreground = Brushes.Red,
+                            FontSize = 12,
+                            Padding = new Thickness(10),
+                            TextWrapping = TextWrapping.Wrap
+                        };
+                        imageBorder.Child = errorText;
+                        container.Children.Add(imageBorder);
+                        return container;
+                    }
+
+                    imageBorder.Child = image;
+
+                    // Click để mở ảnh
+                    imageBorder.MouseLeftButtonDown += (s, e) =>
+                    {
+                        try
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                            {
+                                FileName = msg.FileUrl,
+                                UseShellExecute = true
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"[UI] Cannot open image: {ex.Message}");
+                            MessageBox.Show("Cannot open image!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    };
+
+                    // Caption nếu có
+                    if (!string.IsNullOrEmpty(msg.Content) &&
+                        msg.Content != msg.FileName &&
+                        !msg.Content.StartsWith("📎"))
+                    {
+                        var captionBubble = new Border
+                        {
+                            CornerRadius = new CornerRadius(18),
+                            Background = msg.IsMyMessage ? myBubbleColor : otherBubbleColor,
+                            Padding = new Thickness(12, 8, 12, 8),
+                            Margin = new Thickness(5, 2, 5, 2),
+                            MaxWidth = 300,
+                            HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
+                        };
+
+                        var captionText = new TextBlock
+                        {
+                            Text = msg.Content,
+                            TextWrapping = TextWrapping.Wrap,
+                            FontSize = 14,
+                            Foreground = msg.IsMyMessage ? myTextColor : otherTextColor
+                        };
+                        captionBubble.Child = captionText;
+
+                        container.Children.Add(imageBorder);
+                        container.Children.Add(captionBubble);
+                    }
+                    else
+                    {
+                        container.Children.Add(imageBorder);
+                    }
+
+                    return container;
+                }
+                else
+                {
+                    // ❌ KHÔNG CÓ FileUrl → Hiển thị placeholder
+                    Debug.WriteLine($"[UI] ⚠️ No FileUrl, showing placeholder");
+
+                    var placeholderBubble = new Border
+                    {
+                        CornerRadius = new CornerRadius(18),
+                        Background = msg.IsMyMessage ? myBubbleColor : otherBubbleColor,
+                        Padding = new Thickness(12, 8, 12, 8),
+                        Margin = new Thickness(5, 2, 5, 2),
+                        MaxWidth = 300,
+                        HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
+                    };
+
+                    var placeholderPanel = new StackPanel();
+
+                    // Icon + Text
+                    var iconText = new TextBlock
+                    {
+                        Text = "📷 Image",
+                        FontSize = 16,
+                        FontWeight = FontWeights.SemiBold,
+                        Foreground = msg.IsMyMessage ? myTextColor : otherTextColor,
+                        Margin = new Thickness(0, 0, 0, 4)
+                    };
+                    placeholderPanel.Children.Add(iconText);
+
+                    // Filename
+                    var fileNameText = new TextBlock
+                    {
+                        Text = msg.FileName ?? msg.Content ?? "Unknown",
+                        FontSize = 13,
+                        Foreground = msg.IsMyMessage ? myTextColor : otherTextColor,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    placeholderPanel.Children.Add(fileNameText);
+
+                    // Warning
+                    var warningText = new TextBlock
+                    {
+                        Text = " URL not available",
+                        FontSize = 11,
+                        Foreground = Brushes.Orange,
+                        Margin = new Thickness(0, 4, 0, 0)
+                    };
+                    placeholderPanel.Children.Add(warningText);
+
+                    placeholderBubble.Child = placeholderPanel;
+                    container.Children.Add(placeholderBubble);
+                    return container;
+                }
+            }
+
+            // ✅ KIỂM TRA FILE KHÁC (VIDEO, DOCUMENT)
+            if (msg.TypeMessage != "TEXT" && !string.IsNullOrEmpty(msg.FileUrl))
+            {
+                Debug.WriteLine($"[UI] Creating file bubble for type: {msg.TypeMessage}");
+
+                var fileBubble = new Border
+                {
+                    CornerRadius = new CornerRadius(18),
+                    Background = msg.IsMyMessage ? myBubbleColor : otherBubbleColor,
+                    Padding = new Thickness(12, 8, 12, 8),
+                    Margin = new Thickness(5, 2, 5, 2),
+                    MaxWidth = 300,
+                    HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
+                };
+
+                var filePanel = new StackPanel { Orientation = Orientation.Horizontal };
+
+                var icon = msg.TypeMessage switch
+                {
+                    "VIDEO" => "🎥",
+                    "DOCUMENT" => "📄",
+                    _ => "📎"
+                };
+
+                filePanel.Children.Add(new TextBlock
+                {
+                    Text = icon,
+                    FontSize = 24,
+                    Margin = new Thickness(0, 0, 12, 0),
+                    VerticalAlignment = VerticalAlignment.Center
+                });
+
+                var textStack = new StackPanel();
+                textStack.Children.Add(new TextBlock
+                {
+                    Text = msg.FileName ?? msg.Content ?? "File",
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = msg.IsMyMessage ? myTextColor : otherTextColor,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    MaxWidth = 200
+                });
+
+                var downloadBtn = new TextBlock
+                {
+                    Text = "⬇ Download",
+                    FontSize = 11,
+                    Foreground = msg.IsMyMessage ? myTextColor : new SolidColorBrush(Colors.Blue),
+                    TextDecorations = TextDecorations.Underline,
+                    Cursor = Cursors.Hand,
+                    Margin = new Thickness(0, 4, 0, 0)
+                };
+                downloadBtn.MouseLeftButtonDown += (s, e) =>
+                {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = msg.FileUrl,
+                            UseShellExecute = true
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[UI] Cannot open file: {ex.Message}");
+                    }
+                };
+                textStack.Children.Add(downloadBtn);
+
+                filePanel.Children.Add(textStack);
+                fileBubble.Child = filePanel;
+                container.Children.Add(fileBubble);
+
+                return container;
+            }
+
+            // ✅ TIN NHẮN TEXT BÌNH THƯỜNG
+            Debug.WriteLine($"[UI] Creating text bubble");
+
+            var bubble = new Border
+            {
+                CornerRadius = new CornerRadius(18),
+                Background = msg.IsMyMessage ? myBubbleColor : otherBubbleColor,
+                Padding = new Thickness(12, 8, 12, 8),
+                Margin = new Thickness(5, 2, 5, 2),
+                MaxWidth = 400,
+                HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
+            };
+
+            var textBlock = new TextBlock
+            {
+                Text = msg.Content ?? "",
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = 14,
+                Foreground = msg.IsMyMessage ? myTextColor : otherTextColor
+            };
+            bubble.Child = textBlock;
+
+            container.Children.Add(bubble);
+            return container;
+        }
+
+
+
+        private async void click_sendfile(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_chatViewModel.CurrentGroupId == Guid.Empty)
+                {
+                    MessageBox.Show("Vui lòng chọn nhóm để gửi file!", "Thông báo",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                //  CHỈ CHO PHÉP 7 LOẠI FILE
+                var openFileDialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Title = "Select file to send",
+                    Filter = "Images (*.jpg;*.jpeg;*.png;*.gif)|*.jpg;*.jpeg;*.png;*.gif|" +
+                             "Videos (*.mp4)|*.mp4|" +
+                             "PDF Documents (*.pdf)|*.pdf|" +
+                             "Word Documents (*.docx)|*.docx|" +
+                             "All Supported Files|*.jpg;*.jpeg;*.png;*.gif;*.mp4;*.pdf;*.docx",
+                    FilterIndex = 5, // Default: All Supported Files
+                    Multiselect = false
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    var filePath = openFileDialog.FileName;
+                    var fileInfo = new System.IO.FileInfo(filePath);
+
+                    // Kiểm tra kích thước file (max 50MB)
+                    const long maxFileSize = 50 * 1024 * 1024; // 50MB
+                    if (fileInfo.Length > maxFileSize)
+                    {
+                        MessageBox.Show(
+                            $"File quá lớn! Kích thước tối đa: 50MB\nFile của bạn: {fileInfo.Length / 1024 / 1024}MB",
+                            "Lỗi",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Disable button và hiển thị loading
+                    var btn = sender as Button;
+                    if (btn != null)
+                    {
+                        btn.IsEnabled = false;
+                        btn.Content = "⏳"; // Loading icon
+                    }
+
+                    try
+                    {
+                        // Gửi file qua ViewModel
+                        await _chatViewModel.SendFileAsync(filePath);
+                    }
+                    finally
+                    {
+                        // Re-enable button
+                        if (btn != null)
+                        {
+                            btn.IsEnabled = true;
+                            btn.Content = "📎";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi gửi file: {ex.Message}", "Lỗi",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"[UI] Send file error: {ex.Message}");
+            }
+        }
+
+        //  Helper
+        private bool IsImageFile(string extension)
+        {
+            string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+            return imageExtensions.Contains(extension.ToLower());
+        }
     }
 }

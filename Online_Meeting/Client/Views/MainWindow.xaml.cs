@@ -11,7 +11,9 @@ namespace Online_Meeting.Client.Views
         {
             InitializeComponent();
             // Navigate to Login page when app starts
-            ShowLoginPage();
+           ShowLoginPage();
+           //ShowMainContent();
+
         }
 
         // Method to show login page (hide sidebar)

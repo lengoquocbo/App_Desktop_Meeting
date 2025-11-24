@@ -1,4 +1,5 @@
 ﻿using System;
+﻿using Online_Meeting.Client.Interfaces;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -9,9 +10,9 @@ namespace Online_Meeting.Client.Services
 {
     public class AuthHttpClientHandler : DelegatingHandler
     {
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
 
-        public AuthHttpClientHandler(TokenService tokenService)
+        public AuthHttpClientHandler(ITokenService tokenService)
         {
             _tokenService = tokenService;
         }

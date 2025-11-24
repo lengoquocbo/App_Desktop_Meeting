@@ -15,10 +15,10 @@ namespace Online_Meeting.Client.ViewModels
         private bool _isLoading;
         private string _errorMessage;
 
-        public LoginViewModel()
+        public LoginViewModel(IAuthService authService)
         {
             var tokenService = new TokenService(); // tạo instance TokenService
-            _authService = new AuthService(tokenService);
+            _authService = authService;
         }
 
         public string Username

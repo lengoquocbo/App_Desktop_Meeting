@@ -8,27 +8,27 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Interfaces
 {
-    internal interface IMeetingService
+    public interface IMeetingService
     {
 
         //==================ROOMS==================
 
-        [Get("api/meetings/active-rooms")]
+        [Get("/api/meetings/active-rooms")]
         Task<ApiResponse<List<MeetingRoom>>> GetActivecRooms();
 
-        [Get("api/meetings/my-rooms")]
+        [Get("/api/meetings/my-rooms")]
         Task<ApiResponse<List<MeetingRoom>>> GetMyRooms();
 
-        [Get("api/meetings/rooms/{roomId}")]
+        [Get("/api/meetings/rooms/{roomId}")]
         Task<ApiResponse<MeetingRoomDetail>> GetRoomById(Guid roomId);
 
-        [Get("api/meetings/rooms/key/{roomKey}")]
+        [Get("/api/meetings/rooms/key/{roomKey}")]
         Task<ApiResponse<MeetingRoomDetail>> GetRoomByKey(string RoomKey);
 
-        [Post("api/meetings/rooms")]
+        [Post("/api/meetings/rooms")]
         Task<ApiResponse<CreateMeetingRoomResponse>> CreateRoom([Body] CreateRoomRequest request);
 
-        [Put("api/meetings/rooms/{roomId}")]
+        [Put("/api/meetings/rooms/{roomId}")]
         Task<ApiResponse<MeetingRoom>> UpdateRoom(Guid roomId, [Body] UpdateRoomRequest request);
 
         [Delete("/api/meetings/rooms/{roomId}")]
@@ -38,7 +38,7 @@ namespace Online_Meeting.Client.Interfaces
         //==================ROOM PARTICIPANTS==================
 
         [Post("/api/meetings/rooms/{roomId}/join")]
-        Task<ApiResponse<JoinMeetingResponse>> JoinRoom(Guid roomId);
+        Task<ApiResponse<JoinMeetingResponse>>  JoinRoom(Guid roomId);
 
         [Post("/api/meetings/join/{roomKey}")]
         Task<ApiResponse<JoinMeetingResponse>> JoinRoomByKey(string roomKey);

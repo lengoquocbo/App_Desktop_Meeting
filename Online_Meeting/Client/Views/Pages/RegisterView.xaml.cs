@@ -1,4 +1,5 @@
-﻿using Online_Meeting.Client.ViewModels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Online_Meeting.Client.ViewModels;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +13,7 @@ namespace Online_Meeting.Client.Views.Pages
         public RegisterView()
         {
             InitializeComponent();
-            _viewModel = new RegisterViewModel();
+            _viewModel = App.Services.GetService<RegisterViewModel>();
             DataContext = _viewModel;
         }
 

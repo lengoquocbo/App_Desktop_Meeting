@@ -86,18 +86,41 @@ namespace Online_Meeting.Client.Views
                 MessageBox.Show("Cannot navigate to GroupChatView. Service not registered.");
             }
         }
-        private void NavigateToMeeting(object sender, RoutedEventArgs e)
+        private void NavigateToMeetingPage(object sender, RoutedEventArgs e)
+        {
+            // Gọi hàm logic chính với tham số mặc định
+            NavigateToMeetingPage(MeetingAction.None);
+        }
+
+        public void NavigateToMeetingPage(MeetingAction action = MeetingAction.None)
         {
             SetActiveButton(btnMeeting);
-            MainFrame.Navigate(new MeetingRoomView());
+            var meetingRoomView = App.Services.GetRequiredService<MeetingRoomView>();
+
+            switch (action)
+            {
+                case MeetingAction.Create:
+                    meetingRoomView.SetupForCreate();
+                    break;
+                case MeetingAction.Join:
+                    meetingRoomView.SetupForJoin();
+                    break;
+            }
+
+            MainFrame.Navigate(meetingRoomView);
         }
 
         private void NavigateToSchedule(object sender, RoutedEventArgs e)
         {
-            SetActiveButton(btnSchedule);
-            // MainFrame.Navigate(new SchedulePage());
+            NavigateToSchedule();
         }
 
+        public void NavigateToSchedule()
+        {
+            SetActiveButton(btnSchedule);
+            var scheduleView = App.Services.GetRequiredService<ScheduleView>();
+            MainFrame.Navigate(scheduleView);
+        }
         private void NavigateToSettings(object sender, RoutedEventArgs e)
         {
             SetActiveButton(btnSettings);

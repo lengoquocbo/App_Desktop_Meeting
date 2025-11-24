@@ -18,7 +18,7 @@ namespace Online_Meeting.Client.Interfaces
         /// Tạo group mới
         /// </summary>
         
-            [Post("/groupchat")]
+            [Post("/api/groupchat")]
             [Headers("Content-Type: application/json")]
             Task<ApiResponse<CreateGroupResponse>> CreateGroup([Body] CreateGroupRequest request);
 
@@ -28,7 +28,7 @@ namespace Online_Meeting.Client.Interfaces
         /// lấy danh sách group của user
         /// </summary>
         /// <returns></returns>
-        [Get("/groupchat/my-groups")]
+        [Get("/api/groupchat/my-groups")]
         [Headers("Content-Type: application/json")]
         Task<ApiResponse<List<ChatGroup>>> GetMyGroupsAsync();
 
@@ -39,7 +39,7 @@ namespace Online_Meeting.Client.Interfaces
         /// <summary>
         /// Join group chat - chỉ cần groupId
         /// </summary>
-        [Post("/groupchat/{groupId}/join")]
+        [Post("/api/groupchat/{groupId}/join")]
         [Headers("Content-Type: application/json")]
         Task<ApiResponse<object>> JoinGroupAsync(Guid groupId);
         /// <summary>

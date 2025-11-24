@@ -10,7 +10,7 @@ namespace Online_Meeting.Client.Interfaces
     {
         // ------------------- SEND MESSAGE -------------------
         // POST: /message/groups/{groupId}/send
-        [Post("/message/groups/{groupId}/send")]
+        [Post("/api/message/groups/{groupId}/send")]
         Task<ApiResponse<ChatMessage>> SendMessageAsync(
             Guid groupId,
             [Body] SendMessageRequest request);
@@ -18,7 +18,7 @@ namespace Online_Meeting.Client.Interfaces
 
         // ------------------- GET MESSAGES IN GROUP -------------------
         // GET: /message/groups/{groupId}
-        [Get("/message/groups/{groupId}")]
+        [Get("/api/message/groups/{groupId}")]
         Task<GroupMessagesResponse> GetGroupMessagesAsync(
             Guid groupId,
             [Query] int page = 1,
@@ -27,13 +27,13 @@ namespace Online_Meeting.Client.Interfaces
 
         // ------------------- GET SINGLE MESSAGE -------------------
         // GET: /message/{messageId}
-        [Get("/message/{messageId}")]
+        [Get("/api/message/{messageId}")]
         Task<ApiResponse<MessageResponse>> GetMessageByIdAsync(Guid messageId);
 
 
         // ------------------- UPDATE MESSAGE -------------------
         // PUT: /message/{messageId}
-        [Put("/message/{messageId}")]
+        [Put("/api/message/{messageId}")]
         Task<ApiResponse<MessageResponse>> UpdateMessageAsync(
             Guid messageId,
             [Body] UpdateMessageRequest request);
@@ -41,13 +41,13 @@ namespace Online_Meeting.Client.Interfaces
 
         // ------------------- DELETE MESSAGE -------------------
         // DELETE: /message/{messageId}
-        [Delete("/message/{messageId}")]
+        [Delete("/api/message/{messageId}")]
         Task<ApiResponse<object>> DeleteMessageAsync(Guid messageId);
 
 
         // ------------------- SEARCH MESSAGE -------------------
         // GET: /message/groups/{groupId}/search?keyword=...
-        [Get("/message/groups/{groupId}/search")]
+        [Get("/api/message/groups/{groupId}/search")]
         Task<ApiResponse<List<ChatMessage>>> SearchMessagesAsync(
             Guid groupId,
             [Query] string keyword);
@@ -55,7 +55,7 @@ namespace Online_Meeting.Client.Interfaces
 
         // ------------------- GET MESSAGE BY TYPE -------------------
         // GET: /message/groups/{groupId}/type/{typeMessage}
-        [Get("/message/groups/{groupId}/type/{typeMessage}")]
+        [Get("/api/message/groups/{groupId}/type/{typeMessage}")]
         Task<ApiResponse<List<ChatMessage>>> GetMessagesByTypeAsync(
             Guid groupId,
             string typeMessage);

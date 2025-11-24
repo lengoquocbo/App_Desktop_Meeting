@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Dtos.MeetingSignalRDto
 {
-    internal class MediaToggleData
+    public class MediaToggleData
     {
         public Guid UserId { get; set; }
         public string Username { get; set; }

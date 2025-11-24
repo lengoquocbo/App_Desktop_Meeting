@@ -70,14 +70,14 @@ namespace Online_Meeting.Client.Services
 
                         var dto = System.Text.Json.JsonSerializer.Deserialize<GroupMessageDto>(json, options);
 
-                        Debug.WriteLine($"[SignalR] Parsed DTO:");
-                        Debug.WriteLine($"  - MessageId: {dto.MessageId}");
-                        Debug.WriteLine($"  - GroupId: {dto.GroupId}");
-                        Debug.WriteLine($"  - Username: {dto.Username}");
-                        Debug.WriteLine($"  - Content: {dto.Content}");
-                        Debug.WriteLine($"  - TypeMessage: {dto.TypeMessage}");
-                        Debug.WriteLine($"  - FileName: {dto.FileName}");      
-                        Debug.WriteLine($"  - FileUrl: {dto.FileUrl}");        
+                        //Debug.WriteLine($"[SignalR] Parsed DTO:");
+                        //Debug.WriteLine($"  - MessageId: {dto.MessageId}");
+                        //Debug.WriteLine($"  - GroupId: {dto.GroupId}");
+                        //Debug.WriteLine($"  - Username: {dto.Username}");
+                        //Debug.WriteLine($"  - Content: {dto.Content}");
+                        //Debug.WriteLine($"  - TypeMessage: {dto.TypeMessage}");
+                        //Debug.WriteLine($"  - FileName: {dto.FileName}");      
+                        //Debug.WriteLine($"  - FileUrl: {dto.FileUrl}");        
 
 
                         GroupMessageReceived?.Invoke(this, dto);

@@ -32,10 +32,10 @@ namespace Online_Meeting.Client.Views.Pages
             _groupService = groupService;
             _chatViewModel = chatViewModel;
 
-            // ✅ Subscribe event từ ViewModel
+            //  Subscribe event từ ViewModel
             _chatViewModel.Messages.CollectionChanged += Messages_CollectionChanged;
 
-            // ✅ Load khi Page Loaded
+            //  Load khi Page Loaded
             Loaded += async (s, e) =>
             {
                 await LoadGroupsAsync();
@@ -50,38 +50,36 @@ namespace Online_Meeting.Client.Views.Pages
                 var username = _token.GetUsername();
                 if (string.IsNullOrEmpty(username))
                 {
-                    System.Diagnostics.Debug.WriteLine("[GroupChatView] ❌ Username not found");
+                    System.Diagnostics.Debug.WriteLine("[GroupChatView]  Username not found");
                     return;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[GroupChatView] 🚀 Connecting SignalR for user: {username}");
+                System.Diagnostics.Debug.WriteLine($"[GroupChatView]  Connecting SignalR for user: {username}");
 
                 await _chatViewModel.InitializeAsync(Guid.Empty, username);
 
-                System.Diagnostics.Debug.WriteLine($"[GroupChatView] ✅ SignalR connected!");
+                System.Diagnostics.Debug.WriteLine($"[GroupChatView]  SignalR connected!");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[GroupChatView] ❌ SignalR failed: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[GroupChatView]  SignalR failed: {ex.Message}");
                 MessageBox.Show($"Lỗi kết nối: {ex.Message}");
             }
         }
 
+    
         // ==========================================================
-        // ✅ XỬ LÝ HIỂN THỊ TIN NHẮN - RENDER LẠI TOÀN BỘ
-        // ==========================================================
-        // ==========================================================
-        // ✅ XỬ LÝ HIỂN THỊ TIN NHẮN - LUÔN RENDER LẠI TOÀN BỘ
+        //  XỬ LÝ HIỂN THỊ TIN NHẮN - LUÔN RENDER LẠI TOÀN BỘ
         // ==========================================================
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"[UI] Messages_CollectionChanged: {e.Action}");
 
-            // ✅ Đơn giản: Luôn render lại toàn bộ
+            //  Đơn giản: Luôn render lại toàn bộ
             RenderAllMessages();
         }
 
-        // ✅ Render toàn bộ messages từ ViewModel
+        //  Render toàn bộ messages từ ViewModel
         private void RenderAllMessages()
         {
             ChatMessagesPanel.Children.Clear();
@@ -108,7 +106,7 @@ namespace Online_Meeting.Client.Views.Pages
         //    // Nếu số bubble >= số message → Có thể đã render rồi
         //    return currentBubbleCount >= messageCount;
         //}
-        // ✅ HÀM MỚI: Render toàn bộ messages từ ViewModel
+        //  HÀM MỚI: Render toàn bộ messages từ ViewModel
        
 
         // ==========================================================
@@ -349,14 +347,14 @@ namespace Online_Meeting.Client.Views.Pages
                 MessageInputBox.Focus();
 
 
-                // 🔥 Nếu nội dung là file → gửi file
+                //  Nếu nội dung là file → gửi file
                 if (IsValidFile(message))
                 {
                     await _chatViewModel.SendFileAsync(message);
                 }
                 else
                 {
-                    // 🔥 Không phải file → gửi text
+                    //  Không phải file → gửi text
                     await _chatViewModel.SendTextAsync(message);
                 }
             }
@@ -416,11 +414,11 @@ namespace Online_Meeting.Client.Views.Pages
 
         private UIElement CreateMessageBubble(ChatMessage msg)
         {
-            Debug.WriteLine($"[UI] ========== CREATE BUBBLE ==========");
-            Debug.WriteLine($"[UI] TypeMessage: '{msg.TypeMessage}'");
-            Debug.WriteLine($"[UI] FileUrl: '{msg.FileUrl}'");
-            Debug.WriteLine($"[UI] FileName: '{msg.FileName}'");
-            Debug.WriteLine($"[UI] Content: '{msg.Content}'");
+            //Debug.WriteLine($"[UI] ========== CREATE BUBBLE ==========");
+            //Debug.WriteLine($"[UI] TypeMessage: '{msg.TypeMessage}'");
+            //Debug.WriteLine($"[UI] FileUrl: '{msg.FileUrl}'");
+            //Debug.WriteLine($"[UI] FileName: '{msg.FileName}'");
+            //Debug.WriteLine($"[UI] Content: '{msg.Content}'");
 
             var myBubbleColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0084FF"));
             var otherBubbleColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F0F0F0"));
@@ -561,7 +559,7 @@ namespace Online_Meeting.Client.Views.Pages
                 else
                 {
                     // ❌ KHÔNG CÓ FileUrl → Hiển thị placeholder
-                    Debug.WriteLine($"[UI] ⚠️ No FileUrl, showing placeholder");
+                    Debug.WriteLine($"[UI]  No FileUrl, showing placeholder");
 
                     var placeholderBubble = new Border
                     {
@@ -612,7 +610,7 @@ namespace Online_Meeting.Client.Views.Pages
                 }
             }
 
-            // ✅ KIỂM TRA FILE KHÁC (VIDEO, DOCUMENT)
+            //  KIỂM TRA FILE KHÁC (VIDEO, DOCUMENT)
             if (msg.TypeMessage != "TEXT" && !string.IsNullOrEmpty(msg.FileUrl))
             {
                 Debug.WriteLine($"[UI] Creating file bubble for type: {msg.TypeMessage}");

@@ -130,7 +130,7 @@ namespace Online_Meeting.Client.ViewModels
 
                 // Load messages từ API
                 await LoadMessagesAsync();
-                // ✅ Thông báo UI refresh
+                // Thông báo UI refresh
                 //GroupNeedsUpdate?.Invoke(this, groupId);
                 Debug.WriteLine($"[ViewModel] LoadGroupAsync completed. Messages: {Messages.Count}");
             }
@@ -346,21 +346,20 @@ namespace Online_Meeting.Client.ViewModels
         }
 
         //=====================================================================
-        // ✅ SIGNALR EVENT HANDLERS - ĐÃ SỬA
+        // SIGNALR EVENT HANDLERS - ĐÃ SỬA
         //=====================================================================
         private void OnGroupMessageReceived(object? sender, GroupMessageDto dto)
         {
-            Debug.WriteLine("[ViewModel] ========== SIGNALR MESSAGE RECEIVED ==========");
-            Debug.WriteLine($"[ViewModel] MessageId: {dto.MessageId}");
-            Debug.WriteLine($"[ViewModel] GroupId: {dto.GroupId}");
-            Debug.WriteLine($"[ViewModel] Username: {dto.Username}");
-            Debug.WriteLine($"[ViewModel] Content: {dto.Content}");
-            Debug.WriteLine($"[ViewModel] CurrentGroupId: {CurrentGroupId}");
-
-            // ✅ BỎ QUA nếu không phải group hiện tại
+            //Debug.WriteLine("[ViewModel] ========== SIGNALR MESSAGE RECEIVED ==========");
+            //Debug.WriteLine($"[ViewModel] MessageId: {dto.MessageId}");
+            //Debug.WriteLine($"[ViewModel] GroupId: {dto.GroupId}");
+            //Debug.WriteLine($"[ViewModel] Username: {dto.Username}");
+            //Debug.WriteLine($"[ViewModel] Content: {dto.Content}");
+            //Debug.WriteLine($"[ViewModel] CurrentGroupId: {CurrentGroupId}");
+            //  BỎ QUA nếu không phải group hiện tại
             if (dto.GroupId != CurrentGroupId)
             {
-                Debug.WriteLine($"[ViewModel] ⚠️ IGNORED - Wrong group");
+                Debug.WriteLine($"[ViewModel]  IGNORED - Wrong group");
                 return;
             }
 
@@ -477,8 +476,8 @@ namespace Online_Meeting.Client.ViewModels
                 return;
             }
 
-            Debug.WriteLine($"[ViewModel] ========== SEND FILE START ==========");
-            Debug.WriteLine($"[ViewModel] File: {filePath}");
+            //Debug.WriteLine($"[ViewModel] ========== SEND FILE START ==========");
+            //Debug.WriteLine($"[ViewModel] File: {filePath}");
 
             try
             {
@@ -532,7 +531,7 @@ namespace Online_Meeting.Client.ViewModels
                 Debug.WriteLine($"[ViewModel]  Calling UploadFileAsync...");
                 var uploadResponse = await _upload.UploadFileAsync(streamPart, fileType);
 
-                // ✅ FIX: Dùng IsSuccessStatusCode và Content (Refit response)
+                //  FIX: Dùng IsSuccessStatusCode và Content (Refit response)
                 Debug.WriteLine($"[ViewModel]  Upload response - IsSuccess: {uploadResponse.Success}");
 
                 if (!uploadResponse.Success || uploadResponse.Data == null)
@@ -547,7 +546,7 @@ namespace Online_Meeting.Client.ViewModels
 
                 var fileUrl = uploadResponse.Data.FileUrl;
                 Debug.WriteLine($"[ViewModel] Upload SUCCESS!");
-                Debug.WriteLine($"[ViewModel] FileUrl: {fileUrl}");
+                //Debug.WriteLine($"[ViewModel] FileUrl: {fileUrl}");
 
                 // 4. Gửi message qua API
                 Debug.WriteLine($"[ViewModel]  Sending message to chat...");
@@ -575,8 +574,8 @@ namespace Online_Meeting.Client.ViewModels
                         realMessage.FileName = fileName;
                         realMessage.Content = fileName;
 
-                        Debug.WriteLine($"[ViewModel] RealMessage - FileUrl: '{realMessage.FileUrl}'");
-                        Debug.WriteLine($"[ViewModel] RealMessage - FileName: '{realMessage.FileName}'");
+                        //Debug.WriteLine($"[ViewModel] RealMessage - FileUrl: '{realMessage.FileUrl}'");
+                        //Debug.WriteLine($"[ViewModel] RealMessage - FileName: '{realMessage.FileName}'");
 
                         // Kiểm tra SignalR đã gửi tin chưa
                         var signalRMessage = Messages.FirstOrDefault(m => m.Id == realMessage.Id);

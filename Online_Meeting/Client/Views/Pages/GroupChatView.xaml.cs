@@ -6,7 +6,6 @@ using Online_Meeting.Client.ViewModels;
 using Online_Meeting.Client.Views.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -32,10 +31,10 @@ namespace Online_Meeting.Client.Views.Pages
             _groupService = groupService;
             _chatViewModel = chatViewModel;
 
-            //  Subscribe event từ ViewModel
+            // ✅ Subscribe event từ ViewModel
             _chatViewModel.Messages.CollectionChanged += Messages_CollectionChanged;
 
-            //  Load khi Page Loaded
+            // ✅ Load khi Page Loaded
             Loaded += async (s, e) =>
             {
                 await LoadGroupsAsync();
@@ -67,19 +66,33 @@ namespace Online_Meeting.Client.Views.Pages
             }
         }
 
-    
         // ==========================================================
-        //  XỬ LÝ HIỂN THỊ TIN NHẮN - LUÔN RENDER LẠI TOÀN BỘ
+        //  XỬ LÝ HIỂN THỊ TIN NHẮN - RENDER LẠI TOÀN BỘ
         // ==========================================================
         private void Messages_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"[UI] Messages_CollectionChanged: {e.Action}");
 
-            //  Đơn giản: Luôn render lại toàn bộ
-            RenderAllMessages();
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                // ✅ CHỈ thêm tin nhắn mới
+                foreach (ChatMessage msg in e.NewItems)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[UI] Adding message: {msg.Content} | IsMyMessage: {msg.IsMyMessage}");
+                    var bubble = CreateMessageBubble(msg);
+                    ChatMessagesPanel.Children.Add(bubble);
+                }
+                ScrollToBottom();
+            }
+            else if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+            {
+                // ✅ Clear và render lại toàn bộ
+                System.Diagnostics.Debug.WriteLine($"[UI] Clearing and re-rendering all messages");
+                RenderAllMessages();
+            }
         }
 
-        //  Render toàn bộ messages từ ViewModel
+        // ✅ HÀM MỚI: Render toàn bộ messages từ ViewModel
         private void RenderAllMessages()
         {
             ChatMessagesPanel.Children.Clear();
@@ -95,20 +108,6 @@ namespace Online_Meeting.Client.Views.Pages
 
             ScrollToBottom();
         }
-
-        //// Helper method để check message đã tồn tại
-        //private bool IsMessageAlreadyRendered(ChatMessage msg)
-        //{
-        //    // Đếm số bubble hiện tại
-        //    int currentBubbleCount = ChatMessagesPanel.Children.Count;
-        //    int messageCount = _chatViewModel.Messages.Count;
-
-        //    // Nếu số bubble >= số message → Có thể đã render rồi
-        //    return currentBubbleCount >= messageCount;
-        //}
-        //  HÀM MỚI: Render toàn bộ messages từ ViewModel
-       
-
         // ==========================================================
         // LOAD GROUPS
         // ==========================================================
@@ -225,7 +224,7 @@ namespace Online_Meeting.Client.Views.Pages
         {
             if (sender is Button button && button.Tag is Guid groupId)
             {
-                System.Diagnostics.Debug.WriteLine($"[UI] Group clicked: {groupId}");
+              //  System.Diagnostics.Debug.WriteLine($"[UI] Group clicked: {groupId}");
 
                 // ✅ CHỈ GỌI VIEWMODEL - KHÔNG GỌI LoadMessagesAsync() NỮA!
                 await _chatViewModel.LoadGroupAsync(groupId);
@@ -238,7 +237,7 @@ namespace Online_Meeting.Client.Views.Pages
                 EmptyChatState.Visibility = Visibility.Collapsed;
                 ChatContainer.Visibility = Visibility.Visible;
 
-                System.Diagnostics.Debug.WriteLine($"[UI] Group loaded. Messages count: {_chatViewModel.Messages.Count}");
+              //  System.Diagnostics.Debug.WriteLine($"[UI] Group loaded. Messages count: {_chatViewModel.Messages.Count}");
             }
         }
 
@@ -347,14 +346,14 @@ namespace Online_Meeting.Client.Views.Pages
                 MessageInputBox.Focus();
 
 
-                //  Nếu nội dung là file → gửi file
+                // 🔥 Nếu nội dung là file → gửi file
                 if (IsValidFile(message))
                 {
                     await _chatViewModel.SendFileAsync(message);
                 }
                 else
                 {
-                    //  Không phải file → gửi text
+                    // 🔥 Không phải file → gửi text
                     await _chatViewModel.SendTextAsync(message);
                 }
             }
@@ -448,7 +447,7 @@ namespace Online_Meeting.Client.Views.Pages
             //  KIỂM TRA IMAGE
             if (msg.TypeMessage == "IMAGE")
             {
-                Debug.WriteLine($"[UI] This is an IMAGE message");
+               // Debug.WriteLine($"[UI] This is an IMAGE message");
 
                 //  CÓ FileUrl → Hiển thị ảnh
                 if (!string.IsNullOrEmpty(msg.FileUrl))
@@ -559,7 +558,7 @@ namespace Online_Meeting.Client.Views.Pages
                 else
                 {
                     // ❌ KHÔNG CÓ FileUrl → Hiển thị placeholder
-                    Debug.WriteLine($"[UI]  No FileUrl, showing placeholder");
+                    Debug.WriteLine($"[UI] ⚠️ No FileUrl, showing placeholder");
 
                     var placeholderBubble = new Border
                     {
@@ -610,7 +609,7 @@ namespace Online_Meeting.Client.Views.Pages
                 }
             }
 
-            //  KIỂM TRA FILE KHÁC (VIDEO, DOCUMENT)
+            // ✅ KIỂM TRA FILE KHÁC (VIDEO, DOCUMENT)
             if (msg.TypeMessage != "TEXT" && !string.IsNullOrEmpty(msg.FileUrl))
             {
                 Debug.WriteLine($"[UI] Creating file bubble for type: {msg.TypeMessage}");
@@ -686,7 +685,7 @@ namespace Online_Meeting.Client.Views.Pages
             }
 
             // ✅ TIN NHẮN TEXT BÌNH THƯỜNG
-            Debug.WriteLine($"[UI] Creating text bubble");
+          //  Debug.WriteLine($"[UI] Creating text bubble");
 
             var bubble = new Border
             {

@@ -56,9 +56,9 @@ namespace Online_Meeting.Client.Services
             {
                 response = await base.SendAsync(request, cancellationToken);
 
-                // =================================================================
-                // 3. LOG RESPONSE (Trả về)
-                // =================================================================
+                //// =================================================================
+                //// 3. LOG RESPONSE (Trả về)
+                //// =================================================================
                 Debug.WriteLine($"\n┏━━━━━━━━━━━━━━ HTTP RESPONSE ━━━━━━━━━━━━━");
                 Debug.WriteLine($"┃ URL: {request.RequestUri}"); // Nhắc lại URL để dễ nhìn
                 Debug.WriteLine($"┃ Status: {(int)response.StatusCode} {response.StatusCode}");

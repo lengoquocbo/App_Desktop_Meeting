@@ -37,7 +37,7 @@ namespace Online_Meeting.Client.Services
                 var token = _tokenService.GetAccessToken();
                 if (string.IsNullOrEmpty(token))
                 {
-                    Debug.WriteLine("[SignalR] ❌ NO TOKEN FOUND!");
+                    Debug.WriteLine("[SignalR]  NO TOKEN FOUND!");
                     throw new Exception("No access token available");
                 }
 
@@ -55,7 +55,7 @@ namespace Online_Meeting.Client.Services
                 // ✅ EVENT: ReceiveGroupMessage
                 _connection.On<object>("ReceiveGroupMessage", (data) =>
                 {
-                    Debug.WriteLine("[SignalR] 🔔 ReceiveGroupMessage EVENT FIRED!");
+                    Debug.WriteLine("[SignalR]  ReceiveGroupMessage EVENT FIRED!");
 
                     try
                     {
@@ -84,62 +84,62 @@ namespace Online_Meeting.Client.Services
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine($"[SignalR] ❌ Parse error: {ex.Message}");
+                        Debug.WriteLine($"[SignalR]  Parse error: {ex.Message}");
                         Debug.WriteLine($"[SignalR] Stack: {ex.StackTrace}");
                     }
                 });
 
-                // ✅ EVENT: MessageUpdated
+                //  EVENT: MessageUpdated
                 _connection.On<object>("MessageUpdated", (data) =>
                 {
-                    Debug.WriteLine("[SignalR] 🔔 MessageUpdated EVENT FIRED!");
+                    Debug.WriteLine("[SignalR]  MessageUpdated EVENT FIRED!");
                     var json = System.Text.Json.JsonSerializer.Serialize(data);
                     var dto = System.Text.Json.JsonSerializer.Deserialize<MessageUpdatedDto>(json);
                     MessageUpdated?.Invoke(this, dto);
                 });
 
-                // ✅ EVENT: MessageDeleted
+                //  EVENT: MessageDeleted
                 _connection.On<object>("MessageDeleted", (data) =>
                 {
-                    Debug.WriteLine("[SignalR] 🔔 MessageDeleted EVENT FIRED!");
+                    Debug.WriteLine("[SignalR]  MessageDeleted EVENT FIRED!");
                     var json = System.Text.Json.JsonSerializer.Serialize(data);
                     var dto = System.Text.Json.JsonSerializer.Deserialize<MessageDeletedDto>(json);
                     MessageDeleted?.Invoke(this, dto);
                 });
 
-                // ✅ EVENT: UserTyping
+                //  EVENT: UserTyping
                 _connection.On<object>("UserTyping", (data) =>
                 {
-                    Debug.WriteLine("[SignalR] 🔔 UserTyping EVENT FIRED!");
+                    Debug.WriteLine("[SignalR]  UserTyping EVENT FIRED!");
                     var json = System.Text.Json.JsonSerializer.Serialize(data);
                     var dto = System.Text.Json.JsonSerializer.Deserialize<TypingDto>(json);
                     UserTyping?.Invoke(this, dto);
                 });
 
-                // ✅ EVENT: Error từ server
+                //  EVENT: Error từ server
                 _connection.On<string>("Error", (errorMessage) =>
                 {
-                    Debug.WriteLine($"[SignalR] ❌ Server Error: {errorMessage}");
+                    Debug.WriteLine($"[SignalR]  Server Error: {errorMessage}");
                 });
 
-                // ✅ Connection lifecycle events
+                //  Connection lifecycle events
                 _connection.Closed += async (error) =>
                 {
-                    Debug.WriteLine($"[SignalR] ❌ Connection CLOSED: {error?.Message ?? "No error"}");
+                    Debug.WriteLine($"[SignalR]  Connection CLOSED: {error?.Message ?? "No error"}");
                     ConnectionStateChanged?.Invoke(this, ConnectionState.Disconnected);
                     await Task.Delay(5000);
                 };
 
                 _connection.Reconnecting += (error) =>
                 {
-                    Debug.WriteLine($"[SignalR] 🔄 Reconnecting... {error?.Message ?? ""}");
+                    Debug.WriteLine($"[SignalR]  Reconnecting... {error?.Message ?? ""}");
                     ConnectionStateChanged?.Invoke(this, ConnectionState.Reconnecting);
                     return Task.CompletedTask;
                 };
 
                 _connection.Reconnected += (connectionId) =>
                 {
-                    Debug.WriteLine($"[SignalR] ✅ Reconnected! ConnectionId: {connectionId}");
+                    Debug.WriteLine($"[SignalR]  Reconnected! ConnectionId: {connectionId}");
                     ConnectionStateChanged?.Invoke(this, ConnectionState.Connected);
                     return Task.CompletedTask;
                 };
@@ -147,14 +147,14 @@ namespace Online_Meeting.Client.Services
                 // Start connection
                 await _connection.StartAsync();
 
-                Debug.WriteLine($"[SignalR] ✅ CONNECTED! State: {_connection.State}");
+                Debug.WriteLine($"[SignalR]  CONNECTED! State: {_connection.State}");
                 Debug.WriteLine($"[SignalR] ConnectionId: {_connection.ConnectionId}");
 
                 ConnectionStateChanged?.Invoke(this, ConnectionState.Connected);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ CONNECT FAILED: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  CONNECT FAILED: {ex.Message}");
                 Debug.WriteLine($"[SignalR] Stack: {ex.StackTrace}");
                 throw;
             }
@@ -168,16 +168,16 @@ namespace Online_Meeting.Client.Services
 
                 if (_connection?.State != HubConnectionState.Connected)
                 {
-                    Debug.WriteLine($"[SignalR] ❌ Cannot join group - Connection state: {_connection?.State}");
+                    Debug.WriteLine($"[SignalR]  Cannot join group - Connection state: {_connection?.State}");
                     throw new Exception($"SignalR not connected. State: {_connection?.State}");
                 }
 
                 await _connection.InvokeAsync("JoinGroup", groupId);
-                Debug.WriteLine($"[SignalR] ✅ JoinGroup SUCCESS for {groupId}");
+                Debug.WriteLine($"[SignalR]  JoinGroup SUCCESS for {groupId}");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ JoinGroup FAILED: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  JoinGroup FAILED: {ex.Message}");
                 throw;
             }
         }
@@ -191,12 +191,12 @@ namespace Online_Meeting.Client.Services
                 if (_connection?.State == HubConnectionState.Connected)
                 {
                     await _connection.InvokeAsync("LeaveGroup", groupId);
-                    Debug.WriteLine($"[SignalR] ✅ LeaveGroup SUCCESS for {groupId}");
+                    Debug.WriteLine($"[SignalR]  LeaveGroup SUCCESS for {groupId}");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ LeaveGroup FAILED: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  LeaveGroup FAILED: {ex.Message}");
             }
         }
 
@@ -204,23 +204,23 @@ namespace Online_Meeting.Client.Services
         {
             try
             {
-                Debug.WriteLine($"[SignalR] >>> Calling SendGroupMessage");
-                Debug.WriteLine($"  - GroupId: {groupId}");
-                Debug.WriteLine($"  - Message: {message}");
-                Debug.WriteLine($"  - Type: {typeMessage}");
+                //Debug.WriteLine($"[SignalR] >>> Calling SendGroupMessage");
+                //Debug.WriteLine($"  - GroupId: {groupId}");
+                //Debug.WriteLine($"  - Message: {message}");
+                //Debug.WriteLine($"  - Type: {typeMessage}");
 
                 if (_connection?.State != HubConnectionState.Connected)
                 {
-                    Debug.WriteLine($"[SignalR] ❌ Cannot send - Connection state: {_connection?.State}");
+                    Debug.WriteLine($"[SignalR]  Cannot send - Connection state: {_connection?.State}");
                     throw new Exception($"SignalR not connected. State: {_connection?.State}");
                 }
 
                 await _connection.InvokeAsync("SendGroupMessage", groupId, message, typeMessage);
-                Debug.WriteLine($"[SignalR] ✅ SendGroupMessage SUCCESS");
+                Debug.WriteLine($"[SignalR]  SendGroupMessage SUCCESS");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ SendGroupMessage FAILED: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  SendGroupMessage FAILED: {ex.Message}");
                 throw;
             }
         }
@@ -236,7 +236,7 @@ namespace Online_Meeting.Client.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ UserTyping FAILED: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  UserTyping FAILED: {ex.Message}");
             }
         }
 
@@ -244,13 +244,13 @@ namespace Online_Meeting.Client.Services
         {
             try
             {
-                Debug.WriteLine($"[SignalR] >>> UpdateMessage({messageId})");
+                //Debug.WriteLine($"[SignalR] >>> UpdateMessage({messageId})");
                 await _connection.InvokeAsync("UpdateMessage", messageId, groupId, newContent);
-                Debug.WriteLine($"[SignalR] ✅ UpdateMessage SUCCESS");
+               // Debug.WriteLine($"[SignalR]  UpdateMessage SUCCESS");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ UpdateMessage FAILED: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  UpdateMessage FAILED: {ex.Message}");
                 throw;
             }
         }
@@ -261,11 +261,11 @@ namespace Online_Meeting.Client.Services
             {
                 Debug.WriteLine($"[SignalR] >>> DeleteMessage({messageId})");
                 await _connection.InvokeAsync("DeleteMessage", messageId, groupId);
-                Debug.WriteLine($"[SignalR] ✅ DeleteMessage SUCCESS");
+                Debug.WriteLine($"[SignalR]  DeleteMessage SUCCESS");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ DeleteMessage FAILED: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  DeleteMessage FAILED: {ex.Message}");
                 throw;
             }
         }
@@ -279,12 +279,12 @@ namespace Online_Meeting.Client.Services
                 {
                     await _connection.StopAsync();
                     await _connection.DisposeAsync();
-                    Debug.WriteLine("[SignalR] ✅ Disconnected");
+                    Debug.WriteLine("[SignalR]  Disconnected");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[SignalR] ❌ Disconnect error: {ex.Message}");
+                Debug.WriteLine($"[SignalR]  Disconnect error: {ex.Message}");
             }
         }
     }

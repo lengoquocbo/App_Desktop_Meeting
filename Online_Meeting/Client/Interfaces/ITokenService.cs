@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Interfaces
 {
-    internal interface ITokenService
+    public interface ITokenService
     {
-        void SaveTokens(string username, string accessToken, string refreshToken);
+        void SaveTokens(Guid userId, string username, string accessToken, string refreshToken);
         void SetAccessToken(string accessToken);
         string GetAccessToken();
         string GetRefreshToken();
         bool IsAuthenticated();
         void ClearAllTokens();
         string GetUsername();
+        Guid GetUserId();
     }
 }

@@ -2,6 +2,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Meeting Room" 
+      x:ClassModifier="public"
       Background="#F5F5F5">
 
     <Page.Resources>
@@ -33,38 +34,61 @@
             </Style.Triggers>
         </Style>
 
-        <!-- TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Padding" Value="15,12"/>
-            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8">
-                            <ScrollViewer x:Name="PART_ContentHost" 
-                                        Margin="{TemplateBinding Padding}"/>
+                        <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                    Focusable="False"
+                                    Margin="{TemplateBinding Padding}"
+                                    VerticalAlignment="Center"/>
                         </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- Khi focus đổi màu border -->
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#2196F3"/>
+                            </Trigger>
+
+                            <!-- Khi hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#999999"/>
+                            </Trigger>
+
+                            <!-- Khi disabled -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#F5F5F5"/>
+                                <Setter Property="Foreground" Value="#999999"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="BorderBrush" Value="#2196F3"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
 
         <!-- Card Style -->
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="White"/>
             <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="30"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Width" Value="350"/>
+            <Setter Property="Margin" Value="20"/> 
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect Color="#000000" 
@@ -110,7 +134,7 @@
             <Grid Grid.Row="1" VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="0"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
@@ -168,20 +192,39 @@
                         <TextBlock Text="Tên phòng họp:" 
                                   FontSize="14" 
                                   Foreground="#555555"
-                                  Margin="0,0,0,8"/>
+                                  Margin="10,0,0,8"/>
 
+                        <!-- TextBox sử dụng style -->
                         <TextBox x:Name="RoomNameTextBox"
-                                Style="{StaticResource ModernTextBox}"
-                                Margin="0,0,0,20"
-                                MaxLength="50"
-                                TextAlignment="Center"/>
+                             Margin="5,0,5,20"
+                             MaxLength="50"
+                             Height="50"
+                             FontSize="16"
+                             Padding="12"
+                             BorderThickness="2"
+                             BorderBrush="#CCCCCC">         
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </TextBox.Resources>
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsFocused" Value="True">
+                                            <Setter Property="BorderBrush" Value="#2196F3"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
 
                         <!-- Create Button -->
                         <Button Content="Tạo Cuộc Họp" 
                                Style="{StaticResource ModernButton}"
                                Background="#2196F3"
-                               HorizontalAlignment="Center"  />
-                              <!-- Click="CreateMeeting_Click"-->  
+                               HorizontalAlignment="Center"
+                               Click="OpenPreview_Click"/>
                     </StackPanel>
                 </Border>
 
@@ -231,22 +274,39 @@
                         <TextBlock Text="Mã cuộc họp:" 
                                   FontSize="14" 
                                   Foreground="#555555"
-                                  Margin="0,0,0,8"/>
+                                  Margin="10,0,0,8"/>
 
                         <TextBox x:Name="MeetingCodeTextBox"
-                                Style="{StaticResource ModernTextBox}"
-                                Margin="0,0,0,20"
-                                MaxLength="12"
-                                
-                                TextAlignment="Center"
-                                FontWeight="Medium"/>
+                             Margin="5,0,5,20"
+                             MaxLength="50"
+                             Height="50"
+                             FontSize="16"
+                             Padding="12"
+                             TextAlignment="Center"
+                             BorderThickness="2"
+                             BorderBrush="#CCCCCC">         
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </TextBox.Resources>
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsFocused" Value="True">
+                                            <Setter Property="BorderBrush" Value="#2196F3"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
 
                         <!-- Join Button -->
                         <Button Content="Tham Gia" 
                                Style="{StaticResource ModernButton}"
                                Background="#4CAF50"
-                               HorizontalAlignment="Center"/>
-                       <!-- Click="JoinMeeting_Click"-->
+                               HorizontalAlignment="Center"
+                               Click="JoinByKeyBtn_Click"/>
                     </StackPanel>
                 </Border>
             </Grid>

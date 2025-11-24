@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "..\\Server_Signaling_Meeting\\ServerSignaling_Meeting\\ServerSignaling_Meeting.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "Online_Meeting\\Online_Meeting.csproj",
+        "Action": "Start",
+        "DebugTarget": "Online_Meeting"
+      }
+    ]
+  }
+]

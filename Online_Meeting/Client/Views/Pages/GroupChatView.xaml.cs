@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,7 @@ namespace Online_Meeting.Client.Views.Pages
         private readonly ITokenService _token;
         private readonly IGroupService _groupService;
         private readonly ChatViewModel _chatViewModel;
+
 
         public GroupChatView(TokenService tokenService, IGroupService groupService, ChatViewModel chatViewModel)
         {
@@ -413,12 +415,7 @@ namespace Online_Meeting.Client.Views.Pages
 
         private UIElement CreateMessageBubble(ChatMessage msg)
         {
-            //Debug.WriteLine($"[UI] ========== CREATE BUBBLE ==========");
-            //Debug.WriteLine($"[UI] TypeMessage: '{msg.TypeMessage}'");
-            //Debug.WriteLine($"[UI] FileUrl: '{msg.FileUrl}'");
-            //Debug.WriteLine($"[UI] FileName: '{msg.FileName}'");
-            //Debug.WriteLine($"[UI] Content: '{msg.Content}'");
-
+            // Màu sắc giao diện
             var myBubbleColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0084FF"));
             var otherBubbleColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F0F0F0"));
             var myTextColor = Brushes.White;
@@ -431,7 +428,7 @@ namespace Online_Meeting.Client.Views.Pages
                 Margin = new Thickness(0, 4, 0, 4)
             };
 
-            // Hiện tên người gửi
+            // 1. Hiện tên người gửi (nếu là người khác)
             if (!msg.IsMyMessage)
             {
                 var nameBlock = new TextBlock
@@ -444,121 +441,54 @@ namespace Online_Meeting.Client.Views.Pages
                 container.Children.Add(nameBlock);
             }
 
-            //  KIỂM TRA IMAGE
+            // =========================================================
+            // 2. XỬ LÝ IMAGE (Đã sửa lại để dùng HttpClient + Ngrok)
+            // =========================================================
             if (msg.TypeMessage == "IMAGE")
             {
-               // Debug.WriteLine($"[UI] This is an IMAGE message");
+                Debug.WriteLine($"[UI] This is an IMAGE message");
 
                 //  CÓ FileUrl → Hiển thị ảnh
                 if (!string.IsNullOrEmpty(msg.FileUrl))
                 {
-                    Debug.WriteLine($"[UI] ✅ Has FileUrl, creating image");
-
                     var imageBorder = new Border
                     {
                         CornerRadius = new CornerRadius(12),
                         MaxWidth = 300,
                         MaxHeight = 300,
-                        Background = Brushes.Transparent,
+                        Background = Brushes.Transparent, // Hoặc màu xám nhạt làm placeholder
                         Margin = new Thickness(5, 2, 5, 2),
                         Cursor = Cursors.Hand,
                         HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
                     };
 
-                    var image = new Image
+                    var imageControl = new Image
                     {
                         Stretch = Stretch.Uniform,
                         MaxWidth = 300,
                         MaxHeight = 300
                     };
 
-                    try
-                    {
-                        var bitmap = new BitmapImage();
-                        bitmap.BeginInit();
-                        bitmap.UriSource = new Uri(msg.FileUrl, UriKind.Absolute);
-                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmap.DecodePixelWidth = 300;
-                        bitmap.EndInit();
-                        image.Source = bitmap;
+                    // Thêm Image vào Border ngay lập tức (dù chưa có dữ liệu)
+                    imageBorder.Child = imageControl;
+                    container.Children.Add(imageBorder);
 
-                        Debug.WriteLine($"[UI]  Image loaded successfully");
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[UI]  Failed to load image: {ex.Message}");
+                    // --- BẮT ĐẦU TẢI ẢNH BẤT ĐỒNG BỘ (FIRE & FORGET) ---
+                    // Gọi hàm async nhưng không await để không chặn UI thread
+                    _ = LoadImageAsync(imageControl, msg.FileUrl);
 
-                        var errorText = new TextBlock
-                        {
-                            Text = $"❌ Cannot load image\n{msg.FileName ?? msg.Content}",
-                            Foreground = Brushes.Red,
-                            FontSize = 12,
-                            Padding = new Thickness(10),
-                            TextWrapping = TextWrapping.Wrap
-                        };
-                        imageBorder.Child = errorText;
-                        container.Children.Add(imageBorder);
-                        return container;
-                    }
+                    // Sự kiện click mở ảnh
+                    imageBorder.MouseLeftButtonDown += (s, e) => OpenLink(msg.FileUrl);
 
-                    imageBorder.Child = image;
-
-                    // Click để mở ảnh
-                    imageBorder.MouseLeftButtonDown += (s, e) =>
-                    {
-                        try
-                        {
-                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                            {
-                                FileName = msg.FileUrl,
-                                UseShellExecute = true
-                            });
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"[UI] Cannot open image: {ex.Message}");
-                            MessageBox.Show("Cannot open image!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    };
-
-                    // Caption nếu có
-                    if (!string.IsNullOrEmpty(msg.Content) &&
-                        msg.Content != msg.FileName &&
-                        !msg.Content.StartsWith("📎"))
-                    {
-                        var captionBubble = new Border
-                        {
-                            CornerRadius = new CornerRadius(18),
-                            Background = msg.IsMyMessage ? myBubbleColor : otherBubbleColor,
-                            Padding = new Thickness(12, 8, 12, 8),
-                            Margin = new Thickness(5, 2, 5, 2),
-                            MaxWidth = 300,
-                            HorizontalAlignment = msg.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
-                        };
-
-                        var captionText = new TextBlock
-                        {
-                            Text = msg.Content,
-                            TextWrapping = TextWrapping.Wrap,
-                            FontSize = 14,
-                            Foreground = msg.IsMyMessage ? myTextColor : otherTextColor
-                        };
-                        captionBubble.Child = captionText;
-
-                        container.Children.Add(imageBorder);
-                        container.Children.Add(captionBubble);
-                    }
-                    else
-                    {
-                        container.Children.Add(imageBorder);
-                    }
+                    // Thêm caption nếu có (logic cũ của bạn)
+                    AddCaptionIfExist(container, msg, myBubbleColor, otherBubbleColor, myTextColor, otherTextColor);
 
                     return container;
                 }
                 else
                 {
                     // ❌ KHÔNG CÓ FileUrl → Hiển thị placeholder
-                    Debug.WriteLine($"[UI] ⚠️ No FileUrl, showing placeholder");
+                    Debug.WriteLine($"[UI]  No FileUrl, showing placeholder");
 
                     var placeholderBubble = new Border
                     {
@@ -609,11 +539,9 @@ namespace Online_Meeting.Client.Views.Pages
                 }
             }
 
-            // ✅ KIỂM TRA FILE KHÁC (VIDEO, DOCUMENT)
+            //  KIỂM TRA FILE KHÁC (VIDEO, DOCUMENT)
             if (msg.TypeMessage != "TEXT" && !string.IsNullOrEmpty(msg.FileUrl))
             {
-                Debug.WriteLine($"[UI] Creating file bubble for type: {msg.TypeMessage}");
-
                 var fileBubble = new Border
                 {
                     CornerRadius = new CornerRadius(18),
@@ -653,30 +581,17 @@ namespace Online_Meeting.Client.Views.Pages
 
                 var downloadBtn = new TextBlock
                 {
-                    Text = "⬇ Download",
+                    Text = "⬇ Download / Open",
                     FontSize = 11,
                     Foreground = msg.IsMyMessage ? myTextColor : new SolidColorBrush(Colors.Blue),
                     TextDecorations = TextDecorations.Underline,
                     Cursor = Cursors.Hand,
                     Margin = new Thickness(0, 4, 0, 0)
                 };
-                downloadBtn.MouseLeftButtonDown += (s, e) =>
-                {
-                    try
-                    {
-                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                        {
-                            FileName = msg.FileUrl,
-                            UseShellExecute = true
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"[UI] Cannot open file: {ex.Message}");
-                    }
-                };
-                textStack.Children.Add(downloadBtn);
 
+                downloadBtn.MouseLeftButtonDown += (s, e) => OpenLink(msg.FileUrl);
+
+                textStack.Children.Add(downloadBtn);
                 filePanel.Children.Add(textStack);
                 fileBubble.Child = filePanel;
                 container.Children.Add(fileBubble);
@@ -685,7 +600,7 @@ namespace Online_Meeting.Client.Views.Pages
             }
 
             // ✅ TIN NHẮN TEXT BÌNH THƯỜNG
-          //  Debug.WriteLine($"[UI] Creating text bubble");
+            Debug.WriteLine($"[UI] Creating text bubble");
 
             var bubble = new Border
             {
@@ -708,6 +623,136 @@ namespace Online_Meeting.Client.Views.Pages
 
             container.Children.Add(bubble);
             return container;
+
+            // =========================================================
+            // LOCAL HELPER FUNCTIONS (HÀM HỖ TRỢ NỘI BỘ)
+            // =========================================================
+
+            // Hàm tải ảnh chạy ngầm để không chặn UI
+            async Task LoadImageAsync(Image imgTarget, string url)
+            {
+                try
+                {
+                    string cleanUrl = url?.Trim();
+                    if (string.IsNullOrEmpty(cleanUrl)) return;
+
+                    // Lấy Client từ DI (đã cấu hình header Ngrok)
+                    var httpClientFactory = App.Services.GetService<IHttpClientFactory>();
+                    var client = httpClientFactory.CreateClient("AuthorizedClient");
+
+                    // Tải dữ liệu
+                    byte[] imageBytes = await client.GetByteArrayAsync(cleanUrl);
+
+                    // Quay lại UI Thread để gán ảnh
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        using (var stream = new MemoryStream(imageBytes))
+                        {
+                            var bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad; // Tải xong đóng stream ngay
+                            bitmap.StreamSource = stream;
+                            bitmap.EndInit();
+                            bitmap.Freeze(); // Đóng băng để dùng được trên UI thread
+
+                            imgTarget.Source = bitmap;
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[UI] Failed to load image: {ex.Message}");
+                    // Optional: Set ảnh lỗi mặc định tại đây nếu muốn
+                }
+            }
+
+            // Hàm mở link (tránh lặp code)
+            void OpenLink(string url)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Cannot open link: " + ex.Message);
+                }
+            }
+
+            // Hàm thêm caption cho ảnh
+            void AddCaptionIfExist(StackPanel parent, ChatMessage message, Brush myBg, Brush otherBg, Brush myTx, Brush otherTx)
+            {
+                if (!string.IsNullOrEmpty(message.Content) &&
+                    message.Content != message.FileName &&
+                    !message.Content.StartsWith("📎"))
+                {
+                    var captionBubble = new Border
+                    {
+                        CornerRadius = new CornerRadius(18),
+                        Background = message.IsMyMessage ? myBg : otherBg,
+                        Padding = new Thickness(12, 8, 12, 8),
+                        Margin = new Thickness(5, 2, 5, 2),
+                        MaxWidth = 300,
+                        HorizontalAlignment = message.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
+                    };
+
+                    var captionText = new TextBlock
+                    {
+                        Text = message.Content,
+                        TextWrapping = TextWrapping.Wrap,
+                        FontSize = 14,
+                        Foreground = message.IsMyMessage ? myTx : otherTx
+                    };
+                    captionBubble.Child = captionText;
+                    parent.Children.Add(captionBubble);
+                }
+            }
+
+            // Hàm tạo bubble lỗi/placeholder
+            Border CreatePlaceholderBubble(ChatMessage message, Brush myBg, Brush otherBg, Brush myTx, Brush otherTx)
+            {
+                var placeholderBubble = new Border
+                {
+                    CornerRadius = new CornerRadius(18),
+                    Background = message.IsMyMessage ? myBg : otherBg,
+                    Padding = new Thickness(12, 8, 12, 8),
+                    Margin = new Thickness(5, 2, 5, 2),
+                    MaxWidth = 300,
+                    HorizontalAlignment = message.IsMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left
+                };
+
+                var placeholderPanel = new StackPanel();
+                placeholderPanel.Children.Add(new TextBlock
+                {
+                    Text = "📷 Image",
+                    FontSize = 16,
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = message.IsMyMessage ? myTx : otherTx,
+                    Margin = new Thickness(0, 0, 0, 4)
+                });
+
+                placeholderPanel.Children.Add(new TextBlock
+                {
+                    Text = message.FileName ?? message.Content ?? "Unknown",
+                    FontSize = 13,
+                    Foreground = message.IsMyMessage ? myTx : otherTx,
+                    TextWrapping = TextWrapping.Wrap
+                });
+                placeholderPanel.Children.Add(new TextBlock
+                {
+                    Text = " URL not available",
+                    FontSize = 11,
+                    Foreground = Brushes.Orange,
+                    Margin = new Thickness(0, 4, 0, 0)
+                });
+
+                placeholderBubble.Child = placeholderPanel;
+                return placeholderBubble;
+            }
         }
 
 

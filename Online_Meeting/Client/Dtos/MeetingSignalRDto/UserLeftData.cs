@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Dtos.MeetingSignalRDto
 {
-    internal class UserLeftData
+    public class UserLeftData
     {
         public string ConnectionId { get; set; }
         public Guid UserId { get; set; }

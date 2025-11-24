@@ -1,13 +1,11 @@
-﻿// ============================================
-// 1. ChatSignalRService.cs - THÊM DEBUG LOG
-// ============================================
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json.Linq;
 using Online_Meeting.Client.Interfaces;
 using Online_Meeting.Client.Models;
 using Online_Meeting.Client.Services;
 using System;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Services
@@ -43,11 +41,32 @@ namespace Online_Meeting.Client.Services
 
                 Debug.WriteLine($"[SignalR] ✅ Token: {token.Substring(0, 20)}...");
 
+                string cleanUrl = AppConfig.ChatBaseUrl?.Trim();
+                if (string.IsNullOrEmpty(cleanUrl)) throw new Exception("ChatBaseUrl is empty");
+
+                Debug.WriteLine($"[SignalR] Target URL: '{cleanUrl}'");
+
                 _connection = new HubConnectionBuilder()
-                    .WithUrl("https://localhost:7201/chathub", options =>
+                    .WithUrl(cleanUrl, options =>
                     {
                         options.AccessTokenProvider = () => Task.FromResult(token);
-                        Debug.WriteLine("[SignalR] Token provider configured");
+
+                        // Header Ngrok (Bạn đã làm đúng)
+                        options.Headers["ngrok-skip-browser-warning"] = "true";
+
+                        // 2. ÉP DÙNG WEBSOCKETS (Quan trọng với Ngrok)
+                        // Giúp kết nối ổn định hơn, tránh bị ngrok chặn các request HTTP polling
+                        options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+
+                        // Bỏ qua kiểm tra chứng chỉ SSL (nếu cần thiết với server dev)
+                        options.HttpMessageHandlerFactory = (handler) =>
+                        {
+                            if (handler is HttpClientHandler clientHandler)
+                            {
+                                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
+                            }
+                            return handler;
+                        };
                     })
                     .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5) })
                     .Build();
@@ -68,16 +87,7 @@ namespace Online_Meeting.Client.Services
                             PropertyNameCaseInsensitive = true // ← KEY POINT!
                         };
 
-                        var dto = System.Text.Json.JsonSerializer.Deserialize<GroupMessageDto>(json, options);
-
-                        //Debug.WriteLine($"[SignalR] Parsed DTO:");
-                        //Debug.WriteLine($"  - MessageId: {dto.MessageId}");
-                        //Debug.WriteLine($"  - GroupId: {dto.GroupId}");
-                        //Debug.WriteLine($"  - Username: {dto.Username}");
-                        //Debug.WriteLine($"  - Content: {dto.Content}");
-                        //Debug.WriteLine($"  - TypeMessage: {dto.TypeMessage}");
-                        //Debug.WriteLine($"  - FileName: {dto.FileName}");      
-                        //Debug.WriteLine($"  - FileUrl: {dto.FileUrl}");        
+                        var dto = System.Text.Json.JsonSerializer.Deserialize<GroupMessageDto>(json, options);   
 
 
                         GroupMessageReceived?.Invoke(this, dto);

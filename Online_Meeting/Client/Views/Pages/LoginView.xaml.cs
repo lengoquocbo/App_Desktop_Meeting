@@ -1,4 +1,5 @@
-﻿using Online_Meeting.Client.ViewModels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Online_Meeting.Client.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,7 +12,8 @@ namespace Online_Meeting.Client.Views.Pages
         public LoginView()
         {
             InitializeComponent();
-            _viewModel = new LoginViewModel();
+            _viewModel = App.Services.GetService<LoginViewModel>()
+                ?? throw new InvalidOperationException("LoginViewModel service is not registered.");
             DataContext = _viewModel;
         }
 

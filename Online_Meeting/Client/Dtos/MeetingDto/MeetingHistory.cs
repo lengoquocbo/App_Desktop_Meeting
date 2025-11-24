@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Online_Meeting.Client.Dtos.MeetingDto
 {
-    internal class MeetingHistory
+    public class MeetingHistory
     {
         public Guid Id { get; set; }
         public Guid RoomId { get; set; }

@@ -3,11 +3,14 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Home">
 
+    
     <Page.Resources>
         <!-- Color Resources -->
         <SolidColorBrush x:Key="PrimaryBrush" Color="#4A90E2"/>
         <SolidColorBrush x:Key="AccentBrush" Color="#2ECC71"/>
         <SolidColorBrush x:Key="TextSecondaryBrush" Color="#95A5A6"/>
+        
+
 
         <!-- Button Styles -->
         <Style x:Key="MaterialDesignFlatButton" TargetType="Button">
@@ -35,6 +38,51 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="MaterialDesignCircularProgressBar" TargetType="ProgressBar">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Maximum" Value="100"/>
+            <Setter Property="Value" Value="0"/>
+            <Setter Property="IsIndeterminate" Value="True"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid x:Name="TemplateRoot">
+                            <Viewbox>
+                                <Canvas Width="24" Height="24">
+                                    <Path Stroke="{TemplateBinding Foreground}"
+                                      StrokeThickness="3"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Data="M12,2 A10,10 0 1 1 2,12"
+                                      RenderTransformOrigin="0.5,0.5">
+                                        <Path.RenderTransform>
+                                            <RotateTransform x:Name="SpinnerRotate" Angle="0"/>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Canvas>
+                            </Viewbox>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsIndeterminate" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="SpinnerRotate"
+                                                         Storyboard.TargetProperty="Angle"
+                                                         From="0" To="360" 
+                                                         Duration="0:0:1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <Style x:Key="MaterialDesignIconButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -183,28 +231,32 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Recent Meetings -->
-                <Border Grid.Column="0"
-                        Style="{StaticResource CardStyle}"
-                        Padding="25"
-                        Margin="0,0,15,0">
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="25" Margin="0,0,15,0">
                     <StackPanel>
                         <Grid Margin="0,0,0,20">
-                            <TextBlock Text="Recent Meetings" 
-                                      FontSize="20" 
-                                      FontWeight="Bold"/>
-                            <Button Content="View All"
-                                   Style="{StaticResource MaterialDesignFlatButton}"
-                                   HorizontalAlignment="Right"
-                                   Foreground="{StaticResource PrimaryBrush}"/>
+                            <TextBlock Text="Recent Meetings" FontSize="20" FontWeight="Bold"/>
+
+                            <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" 
+                                 Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                 Width="20" Height="20" HorizontalAlignment="Right" Margin="0,0,300,0"
+                                 Visibility="Collapsed"/>
+
+                            <Button Content="View All" Style="{StaticResource MaterialDesignFlatButton}"
+                            HorizontalAlignment="Right" Foreground="{StaticResource PrimaryBrush}"/>
                         </Grid>
 
-                        <!-- Meeting List -->
                         <ItemsControl x:Name="RecentMeetingsList">
+                            <ItemsControl.Template>
+                                <ControlTemplate TargetType="ItemsControl">
+                                    <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
+
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="#E0E0E0"
-                                           BorderThickness="0,0,0,1"
-                                           Padding="0,15">
+                                    <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="0,15">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -212,50 +264,32 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <Ellipse Grid.Column="0"
-                                                    Width="50"
-                                                    Height="50"
-                                                    Fill="{StaticResource PrimaryBrush}"
-                                                    Margin="0,0,15,0"/>
+                                            <Grid Grid.Column="0" Margin="0,0,15,0">
+                                                <Ellipse Width="50" Height="50" Fill="{StaticResource PrimaryBrush}" Opacity="0.1"/>
+                                                <TextBlock Text="{Binding AvatarChar}" 
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold" FontSize="20"/>
+                                            </Grid>
 
-                                            <StackPanel Grid.Column="1">
-                                                <TextBlock Text="Team Standup Meeting" 
-                                                          FontSize="16" 
-                                                          FontWeight="SemiBold"/>
-                                                <TextBlock Text="2 hours ago • 5 participants" 
-                                                          FontSize="13"
-                                                          Foreground="{StaticResource TextSecondaryBrush}"
-                                                          Margin="0,3,0,0"/>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding RoomName}" FontSize="16" FontWeight="SemiBold"/>
+
+                                                <TextBlock Text="{Binding SubtitleInfo}" 
+                                                   FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,3,0,0"/>
                                             </StackPanel>
 
-                                            <Button Grid.Column="2"
-                                                   Style="{StaticResource MaterialDesignIconButton}"
-                                                   ToolTip="Rejoin"
-                                                   Content="🔄"/>
-
+                                            
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <!-- Empty State -->
-                        <StackPanel x:Name="EmptyMeetingsState"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,40">
-                            <TextBlock Text="📹" 
-                                       FontSize="80"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
-                                       Opacity="0.3"
-                                       HorizontalAlignment="Center"/>
-                            <TextBlock Text="No recent meetings" 
-                                      FontSize="16"
-                                      Foreground="{StaticResource TextSecondaryBrush}"
-                                      HorizontalAlignment="Center"
-                                      Margin="0,15,0,0"/>
+                        <StackPanel x:Name="EmptyStatePanel" Visibility="Collapsed"
+                            VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,40">
+                            <TextBlock Text="📹" FontSize="80" Opacity="0.3" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Chưa có cuộc họp nào gần đây" FontSize="16" Opacity="0.5" HorizontalAlignment="Center"/>
                         </StackPanel>
-
                     </StackPanel>
                 </Border>
 

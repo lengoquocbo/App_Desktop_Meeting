@@ -247,7 +247,7 @@ export function addGuestToWaitingList(guest) {
     updateWaitingBadge(waitingGuests.size);
 
     // (Tùy chọn) Hiện Toast thông báo góc màn hình
-    showToast('Yêu cầu tham gia', `${guest.username} muốn vào cuộc họp.`); }
+    showToast('Yêu cầu tham gia', `${guest.name} muốn vào cuộc họp.`); }
 
 export function renderWaitingList() {
     const listEl = document.getElementById('waitingList');
@@ -263,10 +263,10 @@ export function renderWaitingList() {
         item.className = 'participant-item waiting-item';
         item.innerHTML = `
             <div class="participant-avatar">
-                ${guest.username ? guest.username.charAt(0).toUpperCase() : '?'}
+                ${guest.name ? guest.name.charAt(0).toUpperCase() : '?'}
             </div>
             <div class="participant-info">
-                <div class="participant-info-name">${escapeHtml(guest.username || 'Unknown')}</div>
+                <div class="participant-info-name">${escapeHtml(guest.name || 'Unknown')}</div>
                 <div class="participant-info-status" style="font-size: 11px; color: #6b7280;">Đang chờ duyệt...</div>
             </div>
             <div class="participant-controls">

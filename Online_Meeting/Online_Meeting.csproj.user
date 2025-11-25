@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
-    <PropertyGroup>
+  <PropertyGroup>
     <ActiveDebugProfile>Online_Meeting</ActiveDebugProfile>
+    <_LastSelectedProfileId>D:\Repo\DotNET\App_Desktop_Meeting\Online_Meeting\Properties\PublishProfiles\ClickOnceProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Client\Views\Dialogs\CreateGroupDialog.xaml.cs">
@@ -38,12 +39,11 @@
     <Compile Update="Client\Views\UserControls\SidebarUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-        <Compile Update="Client\Views\Pages\MeetingPreview.xaml.cs">
+    <Compile Update="Client\Views\Pages\MeetingPreview.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Client\Views\Pages\ScheduleView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-
 </Project>
